@@ -2348,6 +2348,11 @@ const server = http.createServer(async (req, res) => {
   try {
     const { pathname } = new URL(req.url, `http://${req.headers.host}`);
     if (req.method === "OPTIONS") return sendOptions(res);
+    if (req.method === "GET" && pathname === "/") {
+      res.writeHead(302, { location: "/login", ...corsHeaders() });
+      res.end();
+      return;
+    }
     if (req.method === "GET" && pathname === "/api/health") return json(res, 200, { ok: true, service: "nexus-ai-voiceops" });
     if (req.method === "GET" && pathname === "/api/state") return json(res, 200, await readDb());
     if (req.method === "GET" && pathname === "/api/evaluations/agents") {
