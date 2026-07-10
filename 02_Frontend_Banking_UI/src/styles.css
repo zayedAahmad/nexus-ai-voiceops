@@ -1,0 +1,250 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ============================================================
+   Nexus AI VoiceOps — "Midnight Nexus" design system
+   Deep navy · electric blue · signal cyan · signature gold.
+   All tokens in oklch.
+   ============================================================ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 20px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-gold: var(--gold);
+  --color-gold-foreground: var(--gold-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+:root {
+  --radius: 0.875rem;
+
+  /* Midnight Nexus base surfaces */
+  --background: oklch(0.14 0.03 260);
+  --foreground: oklch(0.96 0.01 240);
+  --card: oklch(0.19 0.045 262);
+  --card-foreground: oklch(0.96 0.01 240);
+  --popover: oklch(0.2 0.05 262);
+  --popover-foreground: oklch(0.96 0.01 240);
+
+  --primary: oklch(0.55 0.19 265);         /* electric indigo */
+  --primary-foreground: oklch(0.98 0.01 240);
+  --secondary: oklch(0.28 0.06 262);
+  --secondary-foreground: oklch(0.96 0.01 240);
+  --muted: oklch(0.24 0.04 262);
+  --muted-foreground: oklch(0.74 0.03 240);
+  --accent: oklch(0.83 0.14 205);          /* signal cyan */
+  --accent-foreground: oklch(0.14 0.03 260);
+
+  --gold: oklch(0.83 0.14 82);             /* signature gold */
+  --gold-foreground: oklch(0.14 0.03 260);
+
+  --destructive: oklch(0.63 0.22 25);
+  --destructive-foreground: oklch(0.98 0.01 240);
+  --success: oklch(0.74 0.16 155);
+  --success-foreground: oklch(0.14 0.03 260);
+  --warning: oklch(0.82 0.15 75);
+  --warning-foreground: oklch(0.14 0.03 260);
+
+  --border: oklch(1 0 0 / 8%);
+  --input: oklch(1 0 0 / 12%);
+  --ring: oklch(0.83 0.14 205 / 60%);
+
+  --gradient-aurora: linear-gradient(135deg, oklch(0.55 0.19 265) 0%, oklch(0.83 0.14 205) 100%);
+  --gradient-gold: linear-gradient(135deg, oklch(0.72 0.16 75) 0%, oklch(0.9 0.14 90) 100%);
+  --gradient-radial: radial-gradient(circle at 30% 20%, oklch(0.55 0.19 265 / 55%), transparent 55%),
+                     radial-gradient(circle at 80% 80%, oklch(0.83 0.14 205 / 40%), transparent 60%);
+  --gradient-panel: linear-gradient(180deg, oklch(0.22 0.05 262 / 90%), oklch(0.16 0.04 260 / 90%));
+  --gradient-bankcard: linear-gradient(140deg,
+    oklch(0.24 0.07 262) 0%,
+    oklch(0.18 0.05 262) 45%,
+    oklch(0.15 0.04 260) 100%);
+
+  --shadow-glow: 0 0 0 1px oklch(0.83 0.14 205 / 20%), 0 30px 60px -20px oklch(0.55 0.19 265 / 45%);
+  --shadow-gold: 0 0 0 1px oklch(0.83 0.14 82 / 25%), 0 22px 40px -20px oklch(0.83 0.14 82 / 35%);
+  --shadow-elevated: 0 20px 40px -20px oklch(0 0 0 / 60%);
+  --shadow-bankcard: 0 30px 60px -30px oklch(0 0 0 / 70%), inset 0 1px 0 oklch(1 0 0 / 6%);
+}
+
+.dark {
+  --background: oklch(0.14 0.03 260);
+  --foreground: oklch(0.96 0.01 240);
+  --card: oklch(0.19 0.045 262);
+  --card-foreground: oklch(0.96 0.01 240);
+  --popover: oklch(0.2 0.05 262);
+  --popover-foreground: oklch(0.96 0.01 240);
+  --primary: oklch(0.55 0.19 265);
+  --primary-foreground: oklch(0.98 0.01 240);
+  --secondary: oklch(0.28 0.06 262);
+  --secondary-foreground: oklch(0.96 0.01 240);
+  --muted: oklch(0.24 0.04 262);
+  --muted-foreground: oklch(0.74 0.03 240);
+  --accent: oklch(0.83 0.14 205);
+  --accent-foreground: oklch(0.14 0.03 260);
+  --gold: oklch(0.83 0.14 82);
+  --gold-foreground: oklch(0.14 0.03 260);
+  --destructive: oklch(0.63 0.22 25);
+  --destructive-foreground: oklch(0.98 0.01 240);
+  --border: oklch(1 0 0 / 8%);
+  --input: oklch(1 0 0 / 12%);
+  --ring: oklch(0.83 0.14 205 / 60%);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  html,
+  body {
+    background: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  h1, h2, h3, h4, h5 {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
+  ::selection {
+    background: oklch(0.83 0.14 205 / 40%);
+    color: var(--color-foreground);
+  }
+}
+
+@utility nexus-glass {
+  background: var(--gradient-panel);
+  backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid oklch(1 0 0 / 8%);
+  box-shadow: var(--shadow-elevated);
+}
+
+@utility nexus-aurora {
+  background: var(--gradient-aurora);
+}
+
+@utility nexus-gold {
+  background: var(--gradient-gold);
+  color: var(--gold-foreground);
+}
+
+@utility nexus-glow {
+  box-shadow: var(--shadow-glow);
+}
+
+@utility nexus-gold-glow {
+  box-shadow: var(--shadow-gold);
+}
+
+@utility nexus-grid-bg {
+  background-image:
+    linear-gradient(oklch(0.83 0.14 205 / 5%) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0.83 0.14 205 / 5%) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+@utility nexus-ambient {
+  background:
+    radial-gradient(circle at 15% 15%, oklch(0.55 0.19 265 / 35%), transparent 50%),
+    radial-gradient(circle at 85% 85%, oklch(0.83 0.14 205 / 25%), transparent 55%),
+    var(--color-background);
+}
+
+/* Banking-grade card with subtle chip texture and gold hairline */
+@utility nexus-bankcard {
+  position: relative;
+  background: var(--gradient-bankcard);
+  border: 1px solid oklch(1 0 0 / 10%);
+  border-radius: calc(var(--radius) + 12px);
+  box-shadow: var(--shadow-bankcard);
+  overflow: hidden;
+}
+@utility nexus-bankcard-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Pipeline step node used in Agent Trace */
+@utility nexus-pipe-node {
+  position: relative;
+  border: 1px solid oklch(1 0 0 / 10%);
+  background: oklch(0.19 0.045 262 / 70%);
+  backdrop-filter: blur(12px);
+  border-radius: calc(var(--radius) + 6px);
+}
+
+/* Animations */
+@keyframes nexusPulse {
+  0%, 100% { transform: scale(1); opacity: 0.55; }
+  50% { transform: scale(1.35); opacity: 0.15; }
+}
+@keyframes nexusOrbit {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes nexusFade {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes nexusShimmer {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
+
+@utility nexus-pulse { animation: nexusPulse 2.4s ease-in-out infinite; }
+@utility nexus-orbit { animation: nexusOrbit 24s linear infinite; }
+@utility nexus-fade-in { animation: nexusFade 0.5s ease-out both; }
+@utility nexus-shimmer { animation: nexusShimmer 2.6s ease-in-out infinite; }
+
+/* Scrollbar theming */
+@layer base {
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-thumb {
+    background: oklch(0.35 0.05 262);
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-track { background: transparent; }
+}
+
+/* RTL tweaks: mirror decorative gradients so the light source feels natural */
+[dir="rtl"] .nexus-bankcard {
+  background: linear-gradient(220deg,
+    oklch(0.24 0.07 262) 0%,
+    oklch(0.18 0.05 262) 45%,
+    oklch(0.15 0.04 260) 100%);
+}

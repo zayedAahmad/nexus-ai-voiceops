@@ -1,0 +1,1067 @@
+{
+  "customers": [
+    {
+      "customerId": "10452",
+      "employeeId": "10452",
+      "name": "Omar Haddad",
+      "segment": "Payroll",
+      "company": "Levant Foods LLC",
+      "maskedAccount": "JO91 NEXU **** 4521",
+      "phone": "079***452",
+      "riskProfile": "Low"
+    },
+    {
+      "customerId": "11880",
+      "employeeId": "11880",
+      "name": "Maya Al-Khatib",
+      "segment": "Retail Credit Watch",
+      "company": "Independent Sales Consulting",
+      "maskedAccount": "JO66 NEXU **** 1880",
+      "phone": "077***880",
+      "riskProfile": "High",
+      "age": 41,
+      "monthlySalaryJod": 1350,
+      "employmentType": "Contract Sales Consultant",
+      "creditHistorySummary": "Several late payments in the last 12 months, high credit card utilization, and one recently restructured loan."
+    },
+    {
+      "customerId": "22017",
+      "employeeId": "22017",
+      "name": "Yazan Saleh",
+      "segment": "Retail Loan Prospect",
+      "company": "Aqaba Supplies",
+      "maskedAccount": "JO22 NEXU **** 2017",
+      "phone": "078***017",
+      "riskProfile": "Low",
+      "age": 29,
+      "monthlySalaryJod": 1750,
+      "employmentType": "Full-time Operations Supervisor",
+      "creditHistorySummary": "Good credit history with no defaults, but only 8 months of salary history with the bank."
+    },
+    {
+      "customerId": "33045",
+      "employeeId": "33045",
+      "name": "Sara Mansour",
+      "segment": "Prime Retail",
+      "company": "Nexus Tech Solutions",
+      "maskedAccount": "JO33 NEXU **** 3045",
+      "phone": "079***045",
+      "riskProfile": "Low",
+      "age": 34,
+      "monthlySalaryJod": 2450,
+      "employmentType": "Full-time Senior Software Engineer",
+      "creditHistorySummary": "Excellent repayment history, no missed payments, low utilization, salary deposited consistently for 36 months."
+    },
+    {
+      "customerId": "55601",
+      "employeeId": "55601",
+      "name": "Leen Nasser",
+      "segment": "Premium Retail",
+      "company": "MENA Brands Group",
+      "maskedAccount": "JO55 NEXU **** 5601",
+      "phone": "079***601",
+      "riskProfile": "Medium",
+      "age": 37,
+      "monthlySalaryJod": 3200,
+      "employmentType": "Regional Marketing Manager",
+      "creditHistorySummary": "Strong credit profile, premium customer segment, no missed payments."
+    },
+    {
+      "customerId": "99077",
+      "employeeId": "99077",
+      "name": "Faisal Al-Mansour",
+      "segment": "Private Banking VIP",
+      "company": "Al-Mansour Holdings",
+      "maskedAccount": "JO99 NEXU **** 9077",
+      "phone": "079***077",
+      "riskProfile": "Low",
+      "age": 52,
+      "monthlySalaryJod": 9800,
+      "employmentType": "Business Owner / Private Banking Client",
+      "creditHistorySummary": "Excellent long-term relationship, high net worth, multiple facilities, no defaults."
+    }
+  ],
+  "users": [
+    {
+      "userId": "EMP-1001",
+      "type": "employee",
+      "name": "Demo Operations Officer",
+      "email": "ops.officer@nexus-bank.demo",
+      "role": "Operations Officer",
+      "department": "Banking Operations",
+      "linkedCustomerId": null,
+      "status": "Active",
+      "createdAt": "2026-07-07T08:30:00.000Z"
+    },
+    {
+      "userId": "CUS-10452",
+      "type": "customer",
+      "name": "Omar Haddad",
+      "email": "omar.haddad@example.demo",
+      "role": "Retail Payroll Customer",
+      "department": "Customer Channel",
+      "linkedCustomerId": "10452",
+      "status": "Active",
+      "createdAt": "2026-07-07T08:31:00.000Z"
+    },
+    {
+      "userId": "CUS-11880",
+      "type": "customer",
+      "name": "Maya Al-Khatib",
+      "email": "maya.khatib@example.demo",
+      "role": "Retail Credit Watch Customer",
+      "department": "Customer Channel",
+      "linkedCustomerId": "11880",
+      "status": "Active",
+      "createdAt": "2026-07-07T08:32:00.000Z"
+    },
+    {
+      "userId": "CUS-33045",
+      "type": "customer",
+      "name": "Sara Mansour",
+      "email": "sara.mansour@example.demo",
+      "role": "Prime Retail Customer",
+      "department": "Customer Channel",
+      "linkedCustomerId": "33045",
+      "status": "Active",
+      "createdAt": "2026-07-08T08:10:00.000Z"
+    },
+    {
+      "userId": "CUS-22017",
+      "type": "customer",
+      "name": "Yazan Saleh",
+      "email": "yazan.saleh@example.demo",
+      "role": "Retail Loan Customer",
+      "department": "Customer Channel",
+      "linkedCustomerId": "22017",
+      "status": "Active",
+      "createdAt": "2026-07-08T08:11:00.000Z"
+    },
+    {
+      "userId": "CUS-55601",
+      "type": "customer",
+      "name": "Leen Nasser",
+      "email": "leen.nasser@example.demo",
+      "role": "Premium Retail Customer",
+      "department": "Customer Channel",
+      "linkedCustomerId": "55601",
+      "status": "Active",
+      "createdAt": "2026-07-08T08:12:00.000Z"
+    },
+    {
+      "userId": "CUS-99077",
+      "type": "customer",
+      "name": "Faisal Al-Mansour",
+      "email": "faisal.mansour@example.demo",
+      "role": "Private Banking Client",
+      "department": "Customer Channel",
+      "linkedCustomerId": "99077",
+      "status": "Active",
+      "createdAt": "2026-07-08T08:13:00.000Z"
+    }
+  ],
+  "payrollRecords": [
+    {
+      "payrollId": "PAY-2026-0701-10452",
+      "employeeId": "10452",
+      "customerId": "10452",
+      "company": "Levant Foods LLC",
+      "amount": 875.25,
+      "currency": "JOD",
+      "scheduledDate": "2026-07-01",
+      "batchId": "BATCH-LF-0701",
+      "status": "Suspended",
+      "exceptionCode": "ACC-MISMATCH",
+      "reason": "Account number mismatch between employer payroll file and bank customer master record.",
+      "employerFileAccount": "JO91 NEXU 0000 4520",
+      "bankMasterAccount": "JO91 NEXU 0000 4521",
+      "lastCheckedAt": "2026-07-07T08:40:00.000Z"
+    },
+    {
+      "payrollId": "PAY-2026-0701-11880",
+      "employeeId": "11880",
+      "customerId": "11880",
+      "company": "Petra Logistics",
+      "amount": 1120,
+      "currency": "JOD",
+      "scheduledDate": "2026-07-01",
+      "batchId": "BATCH-PL-0701",
+      "status": "Posted",
+      "exceptionCode": null,
+      "reason": "Salary posted successfully.",
+      "employerFileAccount": "JO66 NEXU 0000 1880",
+      "bankMasterAccount": "JO66 NEXU 0000 1880",
+      "lastCheckedAt": "2026-07-07T08:45:00.000Z"
+    },
+    {
+      "payrollId": "PAY-2026-0703-22017",
+      "employeeId": "22017",
+      "customerId": "22017",
+      "company": "Aqaba Supplies",
+      "amount": 2400,
+      "currency": "JOD",
+      "scheduledDate": "2026-07-03",
+      "batchId": "BATCH-AS-0703",
+      "status": "Pending Review",
+      "exceptionCode": "KYC-REVIEW",
+      "reason": "Beneficiary profile requires updated commercial activity verification before posting.",
+      "employerFileAccount": "JO22 NEXU 0000 2017",
+      "bankMasterAccount": "JO22 NEXU 0000 2017",
+      "lastCheckedAt": "2026-07-07T08:50:00.000Z"
+    }
+  ],
+  "bankAccounts": [
+    {
+      "accountId": "ACC-10452-001",
+      "customerId": "10452",
+      "type": "Current",
+      "currency": "JOD",
+      "availableBalance": 1260.75,
+      "ledgerBalance": 1342.75,
+      "status": "Active",
+      "lastUpdated": "2026-07-07T09:05:00.000Z"
+    },
+    {
+      "accountId": "ACC-11880-001",
+      "customerId": "11880",
+      "type": "Savings",
+      "currency": "JOD",
+      "availableBalance": 3890.2,
+      "ledgerBalance": 3890.2,
+      "status": "Active",
+      "lastUpdated": "2026-07-07T09:05:00.000Z"
+    },
+    {
+      "accountId": "ACC-22017-001",
+      "customerId": "22017",
+      "type": "SME Current",
+      "currency": "JOD",
+      "availableBalance": 7420,
+      "ledgerBalance": 7920,
+      "status": "Operational Review",
+      "lastUpdated": "2026-07-07T09:05:00.000Z"
+    },
+    {
+      "accountId": "ACC-33045-001",
+      "customerId": "33045",
+      "type": "Salary Current",
+      "currency": "JOD",
+      "availableBalance": 6840.55,
+      "ledgerBalance": 6840.55,
+      "status": "Active",
+      "lastUpdated": "2026-07-08T09:00:00.000Z"
+    },
+    {
+      "accountId": "ACC-55601-001",
+      "customerId": "55601",
+      "type": "Premium Current",
+      "currency": "JOD",
+      "availableBalance": 15420.1,
+      "ledgerBalance": 15420.1,
+      "status": "Active",
+      "lastUpdated": "2026-07-08T09:00:00.000Z"
+    },
+    {
+      "accountId": "ACC-99077-001",
+      "customerId": "99077",
+      "type": "Private Banking Current",
+      "currency": "JOD",
+      "availableBalance": 212500,
+      "status": "Active",
+      "ledgerBalance": 212500,
+      "lastUpdated": "2026-07-08T09:00:00.000Z"
+    }
+  ],
+  "transactions": [
+    {
+      "transactionId": "TX-10452-001",
+      "customerId": "10452",
+      "date": "2026-07-06",
+      "description": "POS purchase - supermarket",
+      "amount": -18.4,
+      "currency": "JOD",
+      "channel": "Card",
+      "status": "Posted",
+      "risk": "Low"
+    },
+    {
+      "transactionId": "TX-10452-002",
+      "customerId": "10452",
+      "date": "2026-07-05",
+      "description": "CliQ transfer to Ahmad",
+      "amount": -50,
+      "currency": "JOD",
+      "channel": "CliQ",
+      "status": "Posted",
+      "risk": "Low"
+    },
+    {
+      "transactionId": "TX-10452-003",
+      "customerId": "10452",
+      "date": "2026-07-04",
+      "description": "ATM withdrawal",
+      "amount": -100,
+      "currency": "JOD",
+      "channel": "ATM",
+      "status": "Posted",
+      "risk": "Low"
+    },
+    {
+      "transactionId": "TX-22017-001",
+      "customerId": "22017",
+      "date": "2026-07-06",
+      "description": "Supplier payment - Dubai Parts",
+      "amount": -1500,
+      "currency": "JOD",
+      "channel": "Wire",
+      "status": "Held",
+      "risk": "Medium"
+    },
+    {
+      "transactionId": "TX-55601-001",
+      "customerId": "55601",
+      "date": "2026-07-07",
+      "description": "Attempted large transfer to new overseas beneficiary",
+      "amount": -9200,
+      "currency": "JOD",
+      "channel": "CliQ / Cross-border instruction",
+      "status": "Pending Step-up",
+      "risk": "Medium"
+    },
+    {
+      "transactionId": "TX-11880-002",
+      "customerId": "11880",
+      "date": "2026-07-02",
+      "description": "Late credit card payment fee",
+      "amount": -35,
+      "currency": "JOD",
+      "channel": "Card",
+      "status": "Posted",
+      "risk": "Medium"
+    },
+    {
+      "transactionId": "TX-99077-001",
+      "customerId": "99077",
+      "date": "2026-07-06",
+      "description": "Investment portfolio dividend credit",
+      "amount": 4200,
+      "currency": "JOD",
+      "channel": "Private Banking",
+      "status": "Posted",
+      "risk": "Low"
+    }
+  ],
+  "loanApplications": [
+    {
+      "loanId": "LN-10452-01",
+      "customerId": "10452",
+      "product": "Personal Loan",
+      "requestedAmount": 3000,
+      "currency": "JOD",
+      "monthlyIncome": 875.25,
+      "existingMonthlyObligations": 165,
+      "debtBurdenRatio": 18.8,
+      "preEligibility": "Eligible with income verification",
+      "recommendedAction": "Ask customer to upload latest salary certificate."
+    },
+    {
+      "loanId": "LN-22017-01",
+      "customerId": "22017",
+      "product": "Car Loan",
+      "requestedAmount": 14500,
+      "currency": "JOD",
+      "monthlyIncome": 1750,
+      "existingMonthlyObligations": 595,
+      "debtBurdenRatio": 34,
+      "preEligibility": "Eligible pending missing salary certificate",
+      "recommendedAction": "Ask customer to upload official salary certificate before final decision."
+    },
+    {
+      "loanId": "LN-33045-01",
+      "customerId": "33045",
+      "product": "Personal Loan",
+      "requestedAmount": 12000,
+      "currency": "JOD",
+      "monthlyIncome": 2450,
+      "existingMonthlyObligations": 540,
+      "debtBurdenRatio": 22,
+      "preEligibility": "Approved - verified income and clean repayment history",
+      "recommendedAction": "Approve personal loan under standard retail lending policy."
+    },
+    {
+      "loanId": "LN-11880-01",
+      "customerId": "11880",
+      "product": "Debt Consolidation Personal Loan",
+      "requestedAmount": 18000,
+      "currency": "JOD",
+      "monthlyIncome": 1350,
+      "existingMonthlyObligations": 905,
+      "debtBurdenRatio": 67,
+      "preEligibility": "Not eligible - high repayment risk",
+      "recommendedAction": "Reject request due to debt burden ratio exceeding policy threshold."
+    },
+    {
+      "loanId": "LN-99077-01",
+      "customerId": "99077",
+      "product": "Secured Credit Facility",
+      "requestedAmount": 75000,
+      "currency": "JOD",
+      "monthlyIncome": 9800,
+      "existingMonthlyObligations": 1200,
+      "debtBurdenRatio": 12.2,
+      "preEligibility": "Policy review required - collateralized VIP facility",
+      "recommendedAction": "Route to Private Banking approval with portfolio valuation and source-of-funds refresh."
+    }
+  ],
+  "cards": [
+    {
+      "cardId": "CARD-10452-01",
+      "customerId": "10452",
+      "type": "Debit",
+      "last4": "8841",
+      "status": "Active",
+      "dailyLimit": 750,
+      "availableToday": 631.6
+    },
+    {
+      "cardId": "CARD-11880-01",
+      "customerId": "11880",
+      "type": "Credit",
+      "last4": "2710",
+      "status": "Temporarily Blocked",
+      "dailyLimit": 1200,
+      "availableToday": 0
+    }
+  ],
+  "kycProfiles": [
+    {
+      "customerId": "10452",
+      "status": "Valid",
+      "riskRating": "Low",
+      "nextReviewDate": "2027-01-15",
+      "missingDocuments": []
+    },
+    {
+      "customerId": "11880",
+      "status": "Current",
+      "riskRating": "Medium",
+      "nextReviewDate": "2026-10-01",
+      "missingDocuments": []
+    },
+    {
+      "customerId": "22017",
+      "status": "Valid",
+      "riskRating": "Low",
+      "nextReviewDate": "2027-02-15",
+      "missingDocuments": []
+    },
+    {
+      "customerId": "33045",
+      "status": "Valid",
+      "riskRating": "Low",
+      "nextReviewDate": "2027-04-01",
+      "missingDocuments": []
+    },
+    {
+      "customerId": "55601",
+      "status": "Valid",
+      "riskRating": "Low",
+      "nextReviewDate": "2027-01-20",
+      "missingDocuments": []
+    },
+    {
+      "customerId": "99077",
+      "status": "Source-of-funds refresh required",
+      "riskRating": "Medium",
+      "nextReviewDate": "2026-07-30",
+      "missingDocuments": [
+        "Updated source-of-funds declaration",
+        "Latest portfolio statement"
+      ]
+    }
+  ],
+  "beneficiaries": [
+    {
+      "beneficiaryId": "BEN-10452-001",
+      "customerId": "10452",
+      "name": "Ahmad",
+      "alias": "ahmad@click",
+      "rail": "CliQ",
+      "trusted": true,
+      "lastTransferDate": "2026-07-05"
+    },
+    {
+      "beneficiaryId": "BEN-10452-002",
+      "customerId": "10452",
+      "name": "New Supplier",
+      "alias": "supplier@click",
+      "rail": "CliQ",
+      "trusted": false,
+      "lastTransferDate": null
+    },
+    {
+      "beneficiaryId": "BEN-55601-001",
+      "customerId": "55601",
+      "name": "Nordic Trade FZE",
+      "alias": "nordic.trade@click",
+      "rail": "CliQ / international instruction",
+      "trusted": false,
+      "lastTransferDate": null,
+      "country": "Estonia"
+    },
+    {
+      "beneficiaryId": "BEN-55601-002",
+      "customerId": "55601",
+      "name": "MENA Brands Payroll",
+      "alias": "mena.payroll@click",
+      "rail": "CliQ",
+      "trusted": true,
+      "lastTransferDate": "2026-06-25"
+    },
+    {
+      "beneficiaryId": "BEN-99077-001",
+      "customerId": "99077",
+      "name": "Private Banking Desk",
+      "alias": "pb.desk@click",
+      "rail": "Internal",
+      "trusted": true,
+      "lastTransferDate": "2026-07-01"
+    }
+  ],
+  "policies": [
+    {
+      "policyId": "POL-PAY-EX-3-2",
+      "title": "Payroll Exceptions Policy",
+      "section": "3.2 Account Mismatch Handling",
+      "department": "Operations",
+      "source": "Payroll Exceptions Policy - Section 3.2",
+      "excerpt": "If the account number in the employer payroll file does not match the customer master record, the salary must be suspended. Operations must open ticket OPS-12, attach the mismatch evidence, request employer correction, and notify the customer with a non-sensitive explanation.",
+      "keywords": [
+        "payroll",
+        "salary",
+        "account mismatch",
+        "OPS-12",
+        "suspended"
+      ]
+    },
+    {
+      "policyId": "POL-PAY-EX-4-1",
+      "title": "Payroll Exceptions Policy",
+      "section": "4.1 Customer Notification",
+      "department": "Call Center",
+      "source": "Payroll Exceptions Policy - Section 4.1",
+      "excerpt": "Customer-facing responses must avoid exposing employer file details. The approved response is: the salary is under operational verification and the bank is coordinating with the employer.",
+      "keywords": [
+        "customer notification",
+        "salary",
+        "response",
+        "verification"
+      ]
+    },
+    {
+      "policyId": "POL-KYC-2-4",
+      "title": "KYC Refresh Policy",
+      "section": "2.4 Business Activity Review",
+      "department": "Compliance",
+      "source": "KYC Refresh Policy - Section 2.4",
+      "excerpt": "SME profiles flagged for business activity review require updated activity evidence before high-value postings are released.",
+      "keywords": [
+        "KYC",
+        "SME",
+        "review",
+        "business activity",
+        "posting"
+      ]
+    },
+    {
+      "policyId": "POL-LOAN-DBR-1-1",
+      "title": "Retail Lending Policy",
+      "section": "1.1 Debt Burden Review",
+      "department": "Credit",
+      "source": "Retail Lending Policy - Section 1.1",
+      "excerpt": "Personal loan pre-eligibility must consider verified monthly income, existing obligations, and debt burden ratio. If verification is missing, the request must be routed for document collection before final approval.",
+      "keywords": [
+        "loan",
+        "credit",
+        "eligibility",
+        "debt",
+        "income"
+      ]
+    },
+    {
+      "policyId": "POL-CARD-2-3",
+      "title": "Card Operations Policy",
+      "section": "2.3 Temporary Card Blocks",
+      "department": "Card Operations",
+      "source": "Card Operations Policy - Section 2.3",
+      "excerpt": "Temporarily blocked cards may be reactivated only after customer identity verification and fraud-risk check. Customer-facing messages must avoid revealing rule thresholds.",
+      "keywords": [
+        "card",
+        "blocked",
+        "debit",
+        "credit",
+        "reactivate"
+      ]
+    },
+    {
+      "policyId": "POL-CLIQ-4-2",
+      "title": "Instant Payments Policy",
+      "section": "4.2 New Beneficiary Risk",
+      "department": "Payments",
+      "source": "Instant Payments Policy - Section 4.2",
+      "excerpt": "CliQ transfers to new or untrusted beneficiaries require step-up confirmation. If customer intent is unclear or risk is elevated, create a service request instead of executing the transfer.",
+      "keywords": [
+        "CliQ",
+        "transfer",
+        "beneficiary",
+        "payment",
+        "confirmation"
+      ]
+    },
+    {
+      "policyId": "POL-PRIVATE-5-1",
+      "title": "Private Banking Secured Facilities Policy",
+      "section": "5.1 Portfolio-Backed Credit",
+      "department": "Private Banking",
+      "source": "Private Banking Secured Facilities Policy - Section 5.1",
+      "excerpt": "Portfolio-backed credit facilities for VIP clients require collateral valuation, concentration-limit checks, source-of-funds refresh, and Private Banking Credit Committee approval before drawdown.",
+      "keywords": [
+        "private banking",
+        "secured credit",
+        "portfolio",
+        "collateral",
+        "source of funds",
+        "VIP",
+        "approval",
+        "credit committee"
+      ]
+    }
+  ],
+  "serviceRequests": [],
+  "documentUploads": [],
+  "tickets": [],
+  "approvals": [],
+  "auditLogs": [],
+  "n8nWorkflowRuns": [
+    {
+      "runId": "N8N-DEMO-REQUEST-ROUTER",
+      "correlationId": "CORR-DEMO-REQ-10452",
+      "workflowKey": "customer_request_router",
+      "workflowId": "nexus.customer_request_router",
+      "workflowName": "Customer Request Router",
+      "eventType": "service_request_submitted",
+      "requestedAt": "2026-07-09T21:05:00.000Z",
+      "triggeredAt": "2026-07-09T21:05:00.000Z",
+      "webhook": {
+        "method": "POST",
+        "url": "sandbox://n8n/webhook/nexus/customer-request-router"
+      },
+      "payload": {
+        "correlation_id": "CORR-DEMO-REQ-10452",
+        "event_type": "service_request_submitted",
+        "customer": {
+          "customer_id": "10452",
+          "name": "Omar Haddad"
+        },
+        "request": {
+          "request_id": "REQ-DEMO-10452",
+          "request_type": "loan_pre_eligibility_inquiry",
+          "priority": "High"
+        },
+        "audit_context": {
+          "intent": "loan_pre_eligibility_inquiry",
+          "risk_level": "High",
+          "confidence": 90
+        }
+      },
+      "status": "sandbox_queued",
+      "responseStatus": 202,
+      "responseBody": {
+        "ok": true,
+        "mode": "sandbox",
+        "message": "Webhook generated but not sent because N8N_WEBHOOK_BASE_URL is not configured."
+      }
+    },
+    {
+      "runId": "N8N-DEMO-DOCS-INTAKE",
+      "correlationId": "CORR-DEMO-DOCS-10452",
+      "workflowKey": "loan_documents_intake",
+      "workflowId": "nexus.loan_documents_intake",
+      "workflowName": "Loan Documents Intake",
+      "eventType": "loan_documents_uploaded",
+      "requestedAt": "2026-07-09T21:07:00.000Z",
+      "triggeredAt": "2026-07-09T21:07:00.000Z",
+      "webhook": {
+        "method": "POST",
+        "url": "sandbox://n8n/webhook/nexus/loan-documents-intake"
+      },
+      "payload": {
+        "correlation_id": "CORR-DEMO-DOCS-10452",
+        "event_type": "loan_documents_uploaded",
+        "customer": {
+          "customer_id": "10452",
+          "name": "Omar Haddad"
+        },
+        "request": {
+          "request_id": "REQ-DEMO-10452",
+          "request_type": "loan_application"
+        },
+        "attached_docs_url": [
+          {
+            "name": "salary-certificate-demo.pdf",
+            "view_url": "/api/documents/DOC-DEMO-SALARY/view",
+            "download_url": "/api/documents/DOC-DEMO-SALARY/download"
+          }
+        ]
+      },
+      "status": "sandbox_queued",
+      "responseStatus": 202,
+      "responseBody": {
+        "ok": true,
+        "mode": "sandbox",
+        "message": "Documents intake payload generated for Credit Operations."
+      }
+    },
+    {
+      "runId": "N8N-DEMO-OPS-ALERT",
+      "correlationId": "CORR-DEMO-OPS-ALERT",
+      "workflowKey": "operations_alert",
+      "workflowId": "nexus.operations_alert",
+      "workflowName": "Operations Alert",
+      "eventType": "human_review_required",
+      "requestedAt": "2026-07-09T21:09:00.000Z",
+      "triggeredAt": "2026-07-09T21:09:00.000Z",
+      "webhook": {
+        "method": "POST",
+        "url": "sandbox://n8n/webhook/nexus/operations-alert"
+      },
+      "payload": {
+        "correlation_id": "CORR-DEMO-OPS-ALERT",
+        "event_type": "human_review_required",
+        "customer": {
+          "customer_id": "11880",
+          "name": "Maya Al-Khatib"
+        },
+        "audit_context": {
+          "intent": "loan_eligibility",
+          "risk_level": "High",
+          "suggested_action": "Reject request due to debt burden ratio exceeding policy threshold."
+        }
+      },
+      "status": "sandbox_queued",
+      "responseStatus": 202,
+      "responseBody": {
+        "ok": true,
+        "mode": "sandbox",
+        "message": "Human supervisor alert queued."
+      }
+    }
+  ],
+  "customerDocuments": [
+    {
+      "customerId": "33045",
+      "personaId": "perfect-loan",
+      "availableDocuments": [
+        "PDF salary certificate",
+        "Last 3 months bank statement",
+        "National ID scan"
+      ],
+      "missingDocuments": [],
+      "requiredDocuments": [
+        "PDF salary certificate",
+        "Last 3 months bank statement",
+        "National ID scan"
+      ],
+      "lastVerifiedAt": "2026-07-08T09:30:00.000Z",
+      "verificationStatus": "Complete"
+    },
+    {
+      "customerId": "11880",
+      "personaId": "high-risk",
+      "availableDocuments": [
+        "PDF salary slip",
+        "Existing loan statement",
+        "Credit card statement"
+      ],
+      "missingDocuments": [],
+      "requiredDocuments": [
+        "PDF salary slip",
+        "Existing loan statement",
+        "Credit card statement"
+      ],
+      "lastVerifiedAt": "2026-07-08T09:30:00.000Z",
+      "verificationStatus": "Complete"
+    },
+    {
+      "customerId": "22017",
+      "personaId": "missing-doc",
+      "availableDocuments": [
+        "Last 3 months bank statement",
+        "National ID scan"
+      ],
+      "missingDocuments": [
+        "Official salary certificate"
+      ],
+      "requiredDocuments": [
+        "Official salary certificate",
+        "Last 3 months bank statement",
+        "National ID scan"
+      ],
+      "lastVerifiedAt": "2026-07-08T09:30:00.000Z",
+      "verificationStatus": "Incomplete"
+    },
+    {
+      "customerId": "55601",
+      "personaId": "fraud-transfer",
+      "availableDocuments": [
+        "Invoice PDF",
+        "Beneficiary details",
+        "Customer ID scan"
+      ],
+      "missingDocuments": [],
+      "requiredDocuments": [
+        "Invoice PDF",
+        "Beneficiary details",
+        "Customer ID scan"
+      ],
+      "lastVerifiedAt": "2026-07-08T09:30:00.000Z",
+      "verificationStatus": "Complete"
+    },
+    {
+      "customerId": "99077",
+      "personaId": "vip-policy",
+      "availableDocuments": [
+        "Investment portfolio statement",
+        "Company registration document",
+        "Passport scan"
+      ],
+      "missingDocuments": [
+        "Updated source-of-funds declaration"
+      ],
+      "requiredDocuments": [
+        "Investment portfolio statement",
+        "Company registration document",
+        "Updated source-of-funds declaration",
+        "Passport scan"
+      ],
+      "lastVerifiedAt": "2026-07-08T09:30:00.000Z",
+      "verificationStatus": "Incomplete"
+    }
+  ],
+  "demoPersonas": [
+    {
+      "id": "perfect-loan",
+      "title": "Perfect Candidate",
+      "tag": "Approve",
+      "customerId": "33045",
+      "category": "Perfect Candidate",
+      "expected": "CreditRiskAgent should approve.",
+      "customerProfile": {
+        "name": "Sara Mansour",
+        "age": 34,
+        "monthlySalaryJod": 2450,
+        "employmentType": "Full-time Senior Software Engineer",
+        "creditHistorySummary": "Excellent repayment history, no missed payments, low utilization, salary deposited consistently for 36 months."
+      },
+      "request": {
+        "type": "Personal Loan Application",
+        "amountJod": 12000,
+        "purpose": "Home renovation"
+      },
+      "conflict": {
+        "type": "None",
+        "description": "No major risk flags. Debt-to-income ratio is 22%, documents are complete, and KYC is valid."
+      },
+      "requiredDocuments": [
+        "PDF salary certificate",
+        "Last 3 months bank statement",
+        "National ID scan"
+      ],
+      "availableDocuments": [
+        "PDF salary certificate",
+        "Last 3 months bank statement",
+        "National ID scan"
+      ],
+      "missingDocuments": [],
+      "expectedSystemBehavior": "Approve with low risk and show CreditRiskAgent approval_ready.",
+      "agentFocus": [
+        "CreditRiskAgent",
+        "PolicyAgent",
+        "EvaluatorAgent"
+      ],
+      "script": "Customer 33045 Sara Mansour wants a personal loan of 12,000 JOD for home renovation. Her monthly salary is 2,450 JOD, her debt-to-income ratio is 22%, her salary certificate, bank statement, and ID are already verified. Please check eligibility."
+    },
+    {
+      "id": "high-risk",
+      "title": "High-Risk Candidate",
+      "tag": "Reject",
+      "customerId": "11880",
+      "category": "High-Risk Candidate",
+      "expected": "CreditRiskAgent should reject.",
+      "customerProfile": {
+        "name": "Maya Al-Khatib",
+        "age": 41,
+        "monthlySalaryJod": 1350,
+        "employmentType": "Contract Sales Consultant",
+        "creditHistorySummary": "Several late payments in the last 12 months, high credit card utilization, and one recently restructured loan."
+      },
+      "request": {
+        "type": "Personal Loan Application",
+        "amountJod": 18000,
+        "purpose": "Debt consolidation"
+      },
+      "conflict": {
+        "type": "High Debt-to-Income Ratio",
+        "description": "Debt-to-income ratio is 67%, contract employment is unstable, and credit behavior shows elevated repayment risk."
+      },
+      "requiredDocuments": [
+        "PDF salary slip",
+        "Existing loan statement",
+        "Credit card statement"
+      ],
+      "availableDocuments": [
+        "PDF salary slip",
+        "Existing loan statement",
+        "Credit card statement"
+      ],
+      "missingDocuments": [],
+      "expectedSystemBehavior": "Reject or route to final manual decline with high risk.",
+      "agentFocus": [
+        "CreditRiskAgent",
+        "EvaluatorAgent"
+      ],
+      "script": "Customer 11880 Maya Al-Khatib wants an 18,000 JOD debt consolidation loan. Her monthly salary is 1,350 JOD, she has late payments, high card utilization, and a 67% debt-to-income ratio. Please assess the loan request."
+    },
+    {
+      "id": "missing-doc",
+      "title": "Missing Document",
+      "tag": "Ask docs",
+      "customerId": "22017",
+      "category": "Missing Document",
+      "expected": "PolicyAgent should request salary certificate.",
+      "customerProfile": {
+        "name": "Yazan Saleh",
+        "age": 29,
+        "monthlySalaryJod": 1750,
+        "employmentType": "Full-time Operations Supervisor",
+        "creditHistorySummary": "Good credit history with no defaults, but only 8 months of salary history with the bank."
+      },
+      "request": {
+        "type": "Car Loan Inquiry",
+        "amountJod": 14500,
+        "purpose": "Vehicle purchase"
+      },
+      "conflict": {
+        "type": "Missing Salary Certificate",
+        "description": "Customer uploaded bank statements and ID, but official salary certificate is missing."
+      },
+      "requiredDocuments": [
+        "Official salary certificate",
+        "Last 3 months bank statement",
+        "National ID scan"
+      ],
+      "availableDocuments": [
+        "Last 3 months bank statement",
+        "National ID scan"
+      ],
+      "missingDocuments": [
+        "Official salary certificate"
+      ],
+      "expectedSystemBehavior": "Ask customer to upload missing salary certificate before final decision.",
+      "agentFocus": [
+        "CreditRiskAgent",
+        "PolicyAgent",
+        "CustomerSafetyAgent"
+      ],
+      "script": "Customer 22017 Yazan Saleh is asking for a 14,500 JOD car loan. He uploaded his bank statements and national ID, but the official salary certificate is missing. Can the bank check eligibility?"
+    },
+    {
+      "id": "fraud-transfer",
+      "title": "FraudAgent Trigger",
+      "tag": "Step-up",
+      "customerId": "55601",
+      "category": "FraudAgent Trigger",
+      "expected": "FraudAgent should block auto execution.",
+      "customerProfile": {
+        "name": "Leen Nasser",
+        "age": 37,
+        "monthlySalaryJod": 3200,
+        "employmentType": "Regional Marketing Manager",
+        "creditHistorySummary": "Strong credit profile, premium customer segment, no missed payments."
+      },
+      "request": {
+        "type": "CliQ / International Transfer Assistance",
+        "amountJod": 9200,
+        "purpose": "Urgent supplier payment to new overseas beneficiary"
+      },
+      "conflict": {
+        "type": "Unusual Transfer Pattern",
+        "description": "Large transfer to new beneficiary in a new country, outside normal customer behavior."
+      },
+      "requiredDocuments": [
+        "Invoice PDF",
+        "Beneficiary details",
+        "Customer ID scan"
+      ],
+      "availableDocuments": [
+        "Invoice PDF",
+        "Beneficiary details",
+        "Customer ID scan"
+      ],
+      "missingDocuments": [],
+      "expectedSystemBehavior": "Do not execute automatically; trigger FraudAgent and require step-up verification.",
+      "agentFocus": [
+        "FraudAgent",
+        "ComplianceAgent",
+        "CustomerSafetyAgent"
+      ],
+      "script": "Customer 55601 Leen Nasser wants to send 9,200 JOD urgently by CliQ to a new overseas beneficiary in Estonia called Nordic Trade FZE. This is her first transfer to this beneficiary. Can you process it now?"
+    },
+    {
+      "id": "vip-policy",
+      "title": "VIP Policy Query",
+      "tag": "Policy",
+      "customerId": "99077",
+      "category": "VIP Complex Policy Query",
+      "expected": "PolicyAgent and ComplianceAgent should route to private banking approval.",
+      "customerProfile": {
+        "name": "Faisal Al-Mansour",
+        "age": 52,
+        "monthlySalaryJod": 9800,
+        "employmentType": "Business Owner / Private Banking Client",
+        "creditHistorySummary": "Excellent long-term relationship, high net worth, multiple facilities, no defaults."
+      },
+      "request": {
+        "type": "VIP Policy Inquiry",
+        "amountJod": 75000,
+        "purpose": "Secured credit facility using investment portfolio as collateral"
+      },
+      "conflict": {
+        "type": "Complex Policy Interpretation",
+        "description": "VIP and low default risk, but request requires collateral valuation, concentration limits, Private Banking approval, and source-of-funds review."
+      },
+      "requiredDocuments": [
+        "Investment portfolio statement",
+        "Company registration document",
+        "Updated source-of-funds declaration",
+        "Passport scan"
+      ],
+      "availableDocuments": [
+        "Investment portfolio statement",
+        "Company registration document",
+        "Passport scan"
+      ],
+      "missingDocuments": [
+        "Updated source-of-funds declaration"
+      ],
+      "expectedSystemBehavior": "Route to PolicyAgent and ComplianceAgent, explain policy, require Private Banking approval.",
+      "agentFocus": [
+        "PolicyAgent",
+        "ComplianceAgent",
+        "CreditRiskAgent",
+        "EvaluatorAgent"
+      ],
+      "script": "Customer 99077 Faisal Al-Mansour is a private banking VIP client requesting a 75,000 JOD secured credit facility using his investment portfolio as collateral. Does bank policy allow this, and what approvals or documents are required?"
+    }
+  ]
+}

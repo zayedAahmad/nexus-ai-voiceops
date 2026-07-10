@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nexus AI VoiceOps</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <section class="login-screen" id="loginScreen">
+      <div class="login-visual" aria-hidden="true">
+        <div class="nexus-watermark">N</div>
+        <div class="visual-orbit orbit-one"></div>
+        <div class="visual-orbit orbit-two"></div>
+        <div class="voice-field">
+          <span class="wave wave-1"></span>
+          <span class="wave wave-2"></span>
+          <span class="wave wave-3"></span>
+          <span class="wave wave-4"></span>
+          <span class="wave wave-5"></span>
+        </div>
+        <div class="node-map">
+          <span class="node node-core"></span>
+          <span class="node node-a"></span>
+          <span class="node node-b"></span>
+          <span class="node node-c"></span>
+          <span class="node node-d"></span>
+          <span class="connector connector-a"></span>
+          <span class="connector connector-b"></span>
+          <span class="connector connector-c"></span>
+          <span class="connector connector-d"></span>
+        </div>
+        <div class="visual-caption">
+          <span id="visualCaptionLabel">Voice Banking Portal</span>
+          <strong id="visualCaptionText">Private voice banking for salary, loan, card, and transfer support.</strong>
+        </div>
+      </div>
+
+      <div class="login-card">
+        <div class="brand login-brand">
+          <div class="brand-mark">N</div>
+          <div>
+            <strong>Nexus AI VoiceOps</strong>
+            <span>Enterprise Banking AI Login</span>
+          </div>
+        </div>
+        <div class="login-copy">
+          <p class="eyebrow" id="loginEyebrow">Secure customer banking portal</p>
+          <h1 id="loginHeadline">Access your voice banking assistant</h1>
+          <p id="loginDescription">Ask about salary, loans, cards, transfers, and requests through a private banking experience.</p>
+        </div>
+
+        <div class="role-cards login-tabs">
+          <button class="role-card active" data-login-role="customer">
+            <strong>Customer Portal</strong>
+            <span>Private voice banking, requests, and document upload.</span>
+          </button>
+          <button class="role-card" data-login-role="employee">
+            <strong>Employee Workspace</strong>
+            <span>Operations inbox, agents, approvals, and audit trail.</span>
+          </button>
+        </div>
+
+        <label class="login-field">
+          <span>Username / Email</span>
+          <div class="field-shell">
+            <i class="field-icon email-icon" aria-hidden="true"></i>
+            <input id="loginEmailInput" type="email" list="loginEmailOptions" autocomplete="username" placeholder="omar.haddad@example.demo" />
+            <datalist id="loginEmailOptions"></datalist>
+          </div>
+          <select class="login-account-hidden" id="loginAccountSelect" aria-hidden="true" tabindex="-1"></select>
+        </label>
+
+        <label class="login-field">
+          <span>Password</span>
+          <div class="field-shell">
+            <i class="field-icon lock-icon" aria-hidden="true"></i>
+            <input id="loginPasswordInput" type="password" autocomplete="current-password" value="nexus-demo" />
+            <button class="voice-login-button" type="button" aria-label="Voice Login">
+              <span></span>
+            </button>
+          </div>
+        </label>
+
+        <button class="primary-button login-button" id="loginBtn">Login to Nexus AI</button>
+        <p class="security-badge"><span></span>Secured by Nexus AI Guardrails</p>
+      </div>
+    </section>
+
+    <div class="app-shell hidden-shell" id="appShell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">N</div>
+          <div>
+            <strong>Nexus AI</strong>
+            <span>VoiceOps Command</span>
+          </div>
+        </div>
+        <nav class="nav">
+          <a href="#command" class="active">Command Center</a>
+          <a href="#accounts" data-employee-only>Accounts</a>
+          <a href="#agents" data-employee-only>Agents</a>
+          <a href="#trace" data-employee-only>AI Trace</a>
+          <a href="#requests" data-employee-only>Requests</a>
+          <a href="#loanDocuments" data-employee-only>Loan Docs</a>
+          <a href="#automations" data-employee-only>n8n Automations</a>
+          <a href="#tickets" data-employee-only>Tickets</a>
+          <a href="#knowledge" data-employee-only>Knowledge Base</a>
+          <a href="#audit" data-employee-only>Audit Trail</a>
+        </nav>
+        <div class="system-card">
+          <span class="status-dot"></span>
+          <div>
+            <strong>Sandbox Mode</strong>
+            <p>No core banking connection. Synthetic data only.</p>
+          </div>
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Banking AI Operations Layer</p>
+            <h1>Nexus AI VoiceOps</h1>
+          </div>
+          <div class="top-actions">
+            <label class="active-user">
+              <span id="activeAccountLabel">Active account</span>
+              <select id="activeAccountSelect"></select>
+            </label>
+            <span class="badge" id="roleBadge">Employee</span>
+            <div class="segmented language-toggle" role="tablist" aria-label="Language">
+              <button class="segment active" data-language-toggle="en">English</button>
+              <button class="segment" data-language-toggle="ar">العربية</button>
+            </div>
+            <button class="ghost-button" id="resetDataBtn" title="Reset sandbox data">Reset Demo</button>
+            <button class="ghost-button" id="logoutBtn">Logout</button>
+            <button class="primary-button" id="playScenarioTop">Play Demo Scenario</button>
+          </div>
+        </header>
+
+        <section class="metrics-grid" aria-label="System metrics" data-employee-only>
+          <div class="metric">
+            <span>Audit events</span>
+            <strong id="metricAudit">0</strong>
+          </div>
+          <div class="metric">
+            <span>User accounts</span>
+            <strong id="metricUsers">0</strong>
+          </div>
+          <div class="metric">
+            <span>Open tickets</span>
+            <strong id="metricTickets">0</strong>
+          </div>
+          <div class="metric">
+            <span>Approvals</span>
+            <strong id="metricApprovals">0</strong>
+          </div>
+          <div class="metric">
+            <span>Avg confidence</span>
+            <strong id="metricConfidence">--</strong>
+          </div>
+        </section>
+
+        <section class="panel" id="accounts" data-employee-only>
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Identity and access</p>
+              <h2>Create employee or customer account</h2>
+            </div>
+            <span class="badge neutral">Sandbox IAM</span>
+          </div>
+
+          <form class="account-form" id="accountForm">
+            <label>
+              <span>Account type</span>
+              <select id="accountType">
+                <option value="employee">Employee account</option>
+                <option value="customer">Customer account</option>
+              </select>
+            </label>
+            <label>
+              <span>Full name</span>
+              <input id="accountName" type="text" placeholder="Sara Mansour" required />
+            </label>
+            <label>
+              <span>Email</span>
+              <input id="accountEmail" type="email" placeholder="sara@example.demo" required />
+            </label>
+            <label>
+              <span>Role / Company</span>
+              <input id="accountRoleCompany" type="text" placeholder="Operations Officer or Company Name" />
+            </label>
+            <button class="primary-button" type="submit">Create Account</button>
+          </form>
+
+          <div class="table-wrap account-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>User ID</th>
+                  <th>Type</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Role / Channel</th>
+                  <th>Linked Customer</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="accountsTable">
+                <tr><td colspan="7">No user accounts yet.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="workspace" id="command">
+          <div class="panel command-panel">
+            <div class="panel-header">
+              <div>
+                <p class="eyebrow">Voice to governed decision</p>
+                <h2>Command intake</h2>
+              </div>
+              <div class="segmented" role="tablist" aria-label="Voice mode">
+                <button class="segment active" data-mode-toggle="live">Live Voice</button>
+                <button class="segment" data-mode-toggle="demo">Demo Mode</button>
+              </div>
+            </div>
+
+            <div class="mode-row">
+              <label class="radio-pill">
+                <input type="radio" name="userMode" value="employee" checked />
+                <span>Employee VoiceOps</span>
+              </label>
+              <label class="radio-pill">
+                <input type="radio" name="userMode" value="customer" />
+                <span>Customer Voice AI</span>
+              </label>
+            </div>
+
+            <div class="voice-pad" id="voicePad">
+              <button class="mic-button" id="micBtn" title="Start microphone">
+                <span class="mic-icon">◉</span>
+              </button>
+              <div>
+                <strong id="voiceState">Ready for voice command</strong>
+                <p id="voiceHint">Try: Why did customer 10452 not receive his salary?</p>
+              </div>
+            </div>
+
+            <label class="field-label" for="transcript">Transcript</label>
+            <textarea id="transcript" rows="4">Why did customer 10452 not receive his salary?</textarea>
+
+            <div class="quick-scenarios" aria-label="Demo scenarios">
+              <button type="button" data-scenario="salary">Salary</button>
+              <button type="button" data-scenario="balance">Balance</button>
+              <button type="button" data-scenario="transactions">Transactions</button>
+              <button type="button" data-scenario="loan">Loan</button>
+              <button type="button" data-scenario="card">Card</button>
+              <button type="button" data-scenario="kyc">KYC</button>
+              <button type="button" data-scenario="cliq">CliQ</button>
+              <button type="button" data-scenario="complaint">Request</button>
+            </div>
+
+            <div class="persona-demo" data-employee-only>
+              <div class="persona-demo-head">
+                <div>
+                  <p class="eyebrow">Technical committee demos</p>
+                  <h3>Persona Demo</h3>
+                </div>
+                <span>5 agent test cases</span>
+              </div>
+              <div class="persona-grid" id="personaGrid"></div>
+            </div>
+
+            <div class="button-row">
+              <button class="primary-button" id="analyzeBtn">Analyze Query</button>
+              <button class="secondary-button" id="playScenarioBtn">Play Demo Scenario</button>
+              <button class="ghost-button" id="speakAnswerBtn" disabled>Speak Answer</button>
+            </div>
+          </div>
+
+          <div class="panel answer-panel">
+            <div class="panel-header">
+              <div>
+                <p class="eyebrow" id="responseEyebrow">Grounded response</p>
+                <h2 id="responseTitle">Decision output</h2>
+              </div>
+              <span class="badge neutral" id="engineBadge" data-employee-only>No run yet</span>
+            </div>
+
+            <div class="answer-empty" id="emptyState">
+              <strong>Run the payroll demo to generate a bank-grade response.</strong>
+              <p>The answer will include source citations, confidence, risk, and a human approval workflow.</p>
+            </div>
+
+            <div class="answer-content hidden" id="answerContent">
+              <div class="decision-line" data-employee-only>
+                <div>
+                  <span>Intent</span>
+                  <strong id="intentValue">--</strong>
+                </div>
+                <div>
+                  <span>Risk</span>
+                  <strong id="riskValue">--</strong>
+                </div>
+                <div>
+                  <span>Confidence</span>
+                  <strong id="confidenceValue">--</strong>
+                </div>
+              </div>
+
+              <article class="answer-card" data-employee-only>
+                <h3>AI answer</h3>
+                <p id="answerText"></p>
+              </article>
+
+              <article class="answer-card soft">
+                <h3 id="customerResponseTitle">Customer-safe response</h3>
+                <p id="customerResponse"></p>
+              </article>
+
+              <article class="answer-card reason-card hidden" id="customerReasonCard" data-customer-only>
+                <h3 id="customerReasonTitle">Reason</h3>
+                <p id="customerReasonText"></p>
+              </article>
+
+              <article class="answer-card reason-card hidden" id="caseReasonCard" data-employee-only>
+                <h3>Operational reason</h3>
+                <p id="caseReasonText"></p>
+              </article>
+
+              <div class="suggested-action" data-employee-only>
+                <span>Suggested action</span>
+                <strong id="suggestedAction">--</strong>
+              </div>
+
+              <div class="document-upload hidden" id="documentUploadPanel" data-customer-only>
+                <div>
+                  <span class="eyebrow">Loan documents</span>
+                  <h3>Upload required documents</h3>
+                  <p id="documentRequirementText">Attach PDF or image files before sending the loan request.</p>
+                </div>
+                <label class="file-drop" for="loanDocumentInput">
+                  <strong>Select PDF/images</strong>
+                  <span>PDF, PNG, JPG, or WEBP up to 4MB each</span>
+                </label>
+                <input id="loanDocumentInput" type="file" accept="application/pdf,image/png,image/jpeg,image/webp" multiple />
+                <div class="upload-list" id="loanDocumentList">
+                  <span>No documents selected.</span>
+                </div>
+                <p class="upload-status" id="loanUploadStatus">Documents will upload when you send the request.</p>
+              </div>
+
+              <div class="button-row">
+                <button class="primary-button" id="sendRequestBtn">Send Request to Bank</button>
+                <button class="primary-button" id="approveBtn" data-employee-only>Approve Decision</button>
+                <button class="secondary-button" id="createTicketBtn" data-employee-only>Create OPS Ticket</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" id="customerRequests" data-customer-only>
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">My bank requests</p>
+              <h2>Submitted requests</h2>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Request</th>
+                  <th>Type</th>
+                  <th>Status</th>
+                  <th>Decision</th>
+                  <th>Documents</th>
+                  <th>Priority</th>
+                  <th>Submitted</th>
+                </tr>
+              </thead>
+              <tbody id="customerRequestsTable">
+                <tr><td colspan="7">No requests submitted yet.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="panel" id="agents" data-employee-only>
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Multi-agent orchestration</p>
+              <h2>Agent Orchestrator</h2>
+            </div>
+            <span class="badge neutral" id="agentSummary">No agent run yet</span>
+          </div>
+          <div class="agent-grid" id="agentGrid">
+            <div class="muted-item">Run analysis to show routed banking agents.</div>
+          </div>
+        </section>
+
+        <section class="two-column" data-employee-only>
+          <div class="panel" id="trace">
+            <div class="panel-header">
+              <div>
+                <p class="eyebrow">Explainable operations</p>
+                <h2>AI trace</h2>
+              </div>
+              <span class="badge" id="auditIdBadge">No audit ID</span>
+            </div>
+            <ol class="trace-list" id="traceList">
+              <li class="muted-item">Trace appears after analysis.</li>
+            </ol>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <div>
+                <p class="eyebrow">Retrieved evidence</p>
+                <h2>Sources</h2>
+              </div>
+            </div>
+            <div class="source-list" id="sourcesList">
+              <div class="muted-item">Policy citations appear here.</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="two-column" data-employee-only>
+          <div class="panel">
+            <div class="panel-header">
+              <div>
+                <p class="eyebrow">Sandbox record</p>
+                <h2>Customer context</h2>
+              </div>
+            </div>
+            <div class="record-grid" id="recordGrid">
+              <div class="muted-item">Payroll record appears after analysis.</div>
+            </div>
+          </div>
+
+          <div class="panel" id="knowledge">
+            <div class="panel-header">
+              <div>
+                <p class="eyebrow">RAG knowledge base</p>
+                <h2>Policies</h2>
+              </div>
+            </div>
+            <div class="policy-list" id="policyList"></div>
+          </div>
+        </section>
+
+        <section class="panel" id="requests" data-employee-only>
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Customer-to-bank workflow</p>
+              <h2>Service requests inbox</h2>
+            </div>
+          </div>
+          <div class="request-board" id="requestsBoard">
+            <div class="muted-item">No customer requests yet.</div>
+          </div>
+        </section>
+
+        <section class="panel" id="loanDocuments" data-employee-only>
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Credit operations</p>
+              <h2>Loan document queue</h2>
+            </div>
+          </div>
+          <div class="request-board" id="loanDocumentBoard">
+            <div class="muted-item">No pending loan documents yet.</div>
+          </div>
+        </section>
+
+        <section class="panel" id="tickets" data-employee-only>
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Human-in-the-loop</p>
+              <h2>Tickets and approvals</h2>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Ticket</th>
+                  <th>Customer</th>
+                  <th>Payroll</th>
+                  <th>Status</th>
+                  <th>Priority</th>
+                  <th>Owner</th>
+                </tr>
+              </thead>
+              <tbody id="ticketsTable">
+                <tr><td colspan="6">No tickets yet.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="panel" id="automations" data-employee-only>
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">External execution bridge</p>
+              <h2>n8n workflow triggers</h2>
+            </div>
+            <span class="badge neutral">Nexus Operations Architect</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Workflow</th>
+                  <th>Correlation</th>
+                  <th>Event</th>
+                  <th>Status</th>
+                  <th>Webhook</th>
+                  <th>Time</th>
+                </tr>
+              </thead>
+              <tbody id="automationTable">
+                <tr><td colspan="6">No n8n workflow triggers yet.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="panel" id="audit" data-employee-only>
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Voice-to-audit trail</p>
+              <h2>Audit log</h2>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Audit ID</th>
+                  <th>Actor</th>
+                  <th>Intent</th>
+                  <th>Confidence</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="auditTable">
+                <tr><td colspan="6">No audit events yet.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="toast" id="toast"></div>
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>
