@@ -1,0 +1,8 @@
+node_modules/
+**/node_modules/
+.env
+*.log
+dist/
+.DS_Store
+Thumbs.db
+02_Frontend_Banking_UI/.tanstack/tmp/

@@ -93,6 +93,22 @@ Start with the Customer Portal, submit a loan or salary request, upload a docume
 
 For the full presentation path, see [docs/DEMO_SCRIPT_AR.md](docs/DEMO_SCRIPT_AR.md).
 
+## Deployment
+
+The project is ready for a one-service Node deployment on Render.
+
+Recommended Render settings:
+
+```text
+Build Command: npm run build
+Start Command: npm start
+Health Check Path: /api/health
+```
+
+The repository also includes `render.yaml` for Render Blueprint deployment.
+
+Arabic deployment steps are available in [docs/DEPLOY_RENDER_AR.md](docs/DEPLOY_RENDER_AR.md).
+
 ## Important Security Note
 
 This project uses synthetic demo data only. Do not commit real banking data, real customer documents, or real API keys. Put local secrets in `.env` only.

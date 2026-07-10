@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: nexus-ai-voiceops
+    env: node
+    plan: free
+    buildCommand: npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: 22.20.0
+      - key: NEXUS_SINGLE_URL
+        value: "true"

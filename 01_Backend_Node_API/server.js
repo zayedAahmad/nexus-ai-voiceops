@@ -2263,7 +2263,7 @@ function startFrontendDevServer() {
     cwd: FRONTEND_DIR,
     env: {
       ...process.env,
-      VITE_API_BASE_URL: `http://localhost:${PORT}`
+      VITE_API_BASE_URL: process.env.NEXUS_FRONTEND_API_BASE_URL || process.env.VITE_API_BASE_URL || ""
     },
     stdio: "ignore",
     windowsHide: true
@@ -2348,6 +2348,7 @@ const server = http.createServer(async (req, res) => {
   try {
     const { pathname } = new URL(req.url, `http://${req.headers.host}`);
     if (req.method === "OPTIONS") return sendOptions(res);
+    if (req.method === "GET" && pathname === "/api/health") return json(res, 200, { ok: true, service: "nexus-ai-voiceops" });
     if (req.method === "GET" && pathname === "/api/state") return json(res, 200, await readDb());
     if (req.method === "GET" && pathname === "/api/evaluations/agents") {
       return json(res, 200, runAgentEvaluationSuite(await readDb()));
