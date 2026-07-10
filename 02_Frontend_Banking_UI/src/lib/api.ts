@@ -7,19 +7,23 @@ const LOCAL_BACKEND =
     ? "http://localhost:4173"
     : "";
 const BASE = (import.meta.env.VITE_API_BASE_URL || LOCAL_BACKEND).replace(/\/$/, "");
+const API_TIMEOUT_MS = Number(import.meta.env.VITE_API_TIMEOUT_MS || 5000);
 
 function url(path: string) {
   return `${BASE}${path}`;
 }
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const controller = new AbortController();
+  const timeout = globalThis.setTimeout(() => controller.abort(), API_TIMEOUT_MS);
   const res = await fetch(url(path), {
     ...init,
+    signal: init?.signal || controller.signal,
     headers: {
       "content-type": "application/json",
       ...(init?.headers || {}),
     },
-  });
+  }).finally(() => globalThis.clearTimeout(timeout));
   if (!res.ok) {
     let msg = `${res.status} ${res.statusText}`;
     try {
