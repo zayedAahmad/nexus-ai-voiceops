@@ -13,6 +13,28 @@ const state = {
   session: null
 };
 
+function requestedLoginRole() {
+  try {
+    const role = new URLSearchParams(window.location.search).get("role");
+    return role === "employee" || role === "customer" ? role : null;
+  } catch {
+    return null;
+  }
+}
+
+function syncLoginRoleFromUrl() {
+  state.loginRole = requestedLoginRole() || state.loginRole || "customer";
+  $$("[data-login-role]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.loginRole === state.loginRole);
+  });
+}
+
+function updateLoginRoleUrl(role) {
+  const url = new URL(window.location.href);
+  url.searchParams.set("role", role);
+  window.history.replaceState({}, "", url);
+}
+
 const demoTranscripts = {
   employee: {
     en: "Why did customer 10452 not receive his salary?",
@@ -772,6 +794,7 @@ function renderAutomationRuns(db) {
 function renderDb(db) {
   state.db = db;
   syncSessionFromStorage();
+  syncLoginRoleFromUrl();
   renderLoginAccounts();
   renderPersonaDemos(db.demoPersonas || personaDemos);
   renderMetrics(db);
@@ -1376,6 +1399,7 @@ function wireEvents() {
   $$("[data-login-role]").forEach((button) => {
     button.addEventListener("click", () => {
       state.loginRole = button.dataset.loginRole;
+      updateLoginRoleUrl(state.loginRole);
       if (els.loginEmailInput) els.loginEmailInput.value = "";
       $$("[data-login-role]").forEach((roleButton) => {
         roleButton.classList.toggle("active", roleButton.dataset.loginRole === state.loginRole);
