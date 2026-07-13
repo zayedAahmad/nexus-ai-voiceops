@@ -1,5 +1,9 @@
 # Nexus AI VoiceOps
 
+<p align="center">
+  <img src="docs/assets/nexus-ai-voiceops-preview.png" alt="Nexus AI VoiceOps banking platform preview" width="100%" />
+</p>
+
 An autonomous banking operations demo that combines a premium customer portal, an employee workspace, synthetic banking data, multi-agent decision traces, document upload workflows, audit logs, and n8n-style automation events.
 
 The project is designed for a technical committee demo: the customer sees only safe banking replies, while the employee/admin workspace shows the internal agent pipeline, request handling, evidence, documents, decisions, and audit trail.
