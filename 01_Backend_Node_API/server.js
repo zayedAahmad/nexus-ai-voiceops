@@ -247,6 +247,9 @@ function documentLinks(documents = []) {
     document_id: document.documentId,
     mime_type: document.mimeType,
     size_bytes: document.size,
+    analysis_status: document.intelligence?.status || "not_analyzed",
+    document_type: document.intelligence?.documentType || null,
+    confidence: document.intelligence?.confidence || null,
     view_url: `/api/documents/${document.documentId}/view`,
     download_url: `/api/documents/${document.documentId}/download`
   }));
@@ -425,6 +428,130 @@ function parseUploadedFile(file) {
   const originalName = sanitizeFileName(file.name || `document${extensionForMime(mimeType)}`);
   const ext = path.extname(originalName) || extensionForMime(mimeType);
   return { buffer, originalName, mimeType, ext };
+}
+
+function extractReadableDocumentText(buffer, mimeType) {
+  if (mimeType !== "application/pdf") return "";
+  const raw = buffer.toString("latin1");
+  return raw
+    .replace(/[^\x20-\x7E\u0600-\u06FF]+/g, " ")
+    .replace(/\s+/g, " ")
+    .slice(0, 2500);
+}
+
+function inferDocumentType({ originalName, mimeType, text }) {
+  const haystack = `${originalName} ${text}`.toLowerCase();
+  const checks = [
+    ["salary_certificate", ["salary", "payslip", "pay-slip", "income", "راتب", "دخل"]],
+    ["bank_statement", ["statement", "bank statement", "account", "كشف", "حساب"]],
+    ["identity_document", ["id", "identity", "passport", "national", "هوية", "جواز"]],
+  ];
+  for (const [type, keywords] of checks) {
+    if (keywords.some((keyword) => haystack.includes(keyword))) return type;
+  }
+  if (mimeType === "application/pdf") return "supporting_pdf";
+  return "supporting_image";
+}
+
+function analyzeUploadedDocument({ parsed, request, customer, loan, language = "en" }) {
+  const ar = language === "ar";
+  const text = extractReadableDocumentText(parsed.buffer, parsed.mimeType);
+  const documentType = inferDocumentType({
+    originalName: parsed.originalName,
+    mimeType: parsed.mimeType,
+    text
+  });
+  const textLayerFound = text.length > 80;
+  const typeConfidence = {
+    salary_certificate: 93,
+    bank_statement: 90,
+    identity_document: 88,
+    supporting_pdf: textLayerFound ? 72 : 64,
+    supporting_image: 62
+  };
+  const labels = {
+    salary_certificate: ar ? "شهادة راتب" : "Salary certificate",
+    bank_statement: ar ? "كشف حساب" : "Bank statement",
+    identity_document: ar ? "وثيقة هوية" : "Identity document",
+    supporting_pdf: ar ? "PDF داعم" : "Supporting PDF",
+    supporting_image: ar ? "صورة داعمة" : "Supporting image"
+  };
+  const signals = [
+    `${documentType}_detected`,
+    textLayerFound ? "pdf_text_layer_detected" : "metadata_based_analysis",
+    "linked_to_loan_request"
+  ];
+  const flags = [];
+  if (!["salary_certificate", "bank_statement", "identity_document"].includes(documentType)) {
+    flags.push(ar ? "نوع المستند يحتاج مراجعة موظف" : "Document type needs officer review");
+  }
+  if (documentType === "salary_certificate" && !loan?.monthlyIncome) {
+    flags.push(ar ? "لا يوجد دخل شهري مرجعي للمقارنة" : "No reference monthly income available");
+  }
+
+  const extractedFields = {
+    customerName: customer?.name || request.customerName || "Unknown",
+    customerId: request.customerId,
+    documentName: parsed.originalName,
+    detectedType: labels[documentType],
+    mimeType: parsed.mimeType,
+    fileSizeKb: Math.round(parsed.buffer.length / 1024),
+    referenceMonthlyIncome: loan?.monthlyIncome ? `${loan.monthlyIncome} ${loan.currency || "JOD"}` : "Not available",
+    employer: customer?.company || "Not available"
+  };
+
+  return {
+    agentId: "DocumentIntelligenceAgent",
+    status: flags.length ? "needs_review" : "analyzed",
+    documentType,
+    documentTypeLabel: labels[documentType],
+    confidence: typeConfidence[documentType] || 65,
+    extractedFields,
+    signals,
+    flags,
+    recommendation: flags.length ? "manual_document_review" : "accepted_for_credit_review",
+    summary: ar
+      ? `تم تحليل المستند كـ ${labels[documentType]} وربطه بطلب القرض. ${flags.length ? "يوجد تنبيه يحتاج مراجعة موظف." : "المستند مناسب للانتقال إلى مراجعة الائتمان."}`
+      : `Document analyzed as ${labels[documentType]} and linked to the loan request. ${flags.length ? "Officer review is required." : "It is ready for credit review."}`
+  };
+}
+
+function summarizeDocumentIntelligence({ request, documents, language = "en" }) {
+  const ar = language === "ar";
+  const uploadedTypes = new Set(documents.map((document) => document.intelligence?.documentType).filter(Boolean));
+  const required = request.requiredDocuments || [];
+  const typeForRequired = (item) => {
+    const text = String(item || "").toLowerCase();
+    if (text.includes("salary") || text.includes("راتب")) return "salary_certificate";
+    if (text.includes("statement") || text.includes("bank") || text.includes("كشف") || text.includes("حساب")) return "bank_statement";
+    if (text.includes("id") || text.includes("identity") || text.includes("passport") || text.includes("هوية")) return "identity_document";
+    return "supporting_document";
+  };
+  const remainingRequiredDocuments = required.filter((item) => {
+    const neededType = typeForRequired(item);
+    return neededType === "supporting_document" ? false : !uploadedTypes.has(neededType);
+  });
+  const averageConfidence = documents.length
+    ? Math.round(documents.reduce((sum, document) => sum + (document.intelligence?.confidence || 0), 0) / documents.length)
+    : 0;
+  const flags = documents.flatMap((document) => document.intelligence?.flags || []);
+  const readyForCreditReview = documents.length > 0 && remainingRequiredDocuments.length === 0 && flags.length === 0;
+  return {
+    agentId: "DocumentIntelligenceAgent",
+    status: readyForCreditReview ? "ready_for_credit_review" : "needs_document_review",
+    analyzedCount: documents.length,
+    averageConfidence,
+    detectedTypes: Array.from(uploadedTypes),
+    remainingRequiredDocuments,
+    flags,
+    summary: ar
+      ? readyForCreditReview
+        ? `تم تحليل ${documents.length} مستند/مستندات، والملف جاهز لمراجعة الائتمان بثقة ${averageConfidence}%.`
+        : `تم تحليل ${documents.length} مستند/مستندات، لكن ما زالت هناك مستندات أو تنبيهات تحتاج مراجعة.`
+      : readyForCreditReview
+        ? `${documents.length} document(s) analyzed. The file is ready for credit review with ${averageConfidence}% confidence.`
+        : `${documents.length} document(s) analyzed, but remaining documents or flags need review.`
+  };
 }
 
 function extractEntity(transcript, fallbackId = "10452") {
@@ -2120,6 +2247,9 @@ async function uploadServiceRequestDocuments(req, res) {
   if (files.length > 5) return json(res, 400, { error: "Upload up to 5 documents per request." });
 
   const now = new Date().toISOString();
+  const language = body.language || "en";
+  const customer = db.customers.find((item) => item.customerId === request.customerId);
+  const loan = db.loanApplications.find((item) => item.customerId === request.customerId);
   const savedDocuments = [];
   for (const file of files) {
     const parsed = parseUploadedFile(file);
@@ -2136,39 +2266,66 @@ async function uploadServiceRequestDocuments(req, res) {
       storedName,
       mimeType: parsed.mimeType,
       size: parsed.buffer.length,
-      uploadedAt: now
+      uploadedAt: now,
+      intelligence: analyzeUploadedDocument({
+        parsed,
+        request,
+        customer,
+        loan,
+        language
+      })
     };
     db.documentUploads.unshift(document);
     savedDocuments.push(document);
   }
 
+  const documentAnalysisSummary = summarizeDocumentIntelligence({
+    request,
+    documents: savedDocuments,
+    language
+  });
   request.documentIds = Array.from(new Set([...(request.documentIds || []), ...savedDocuments.map((doc) => doc.documentId)]));
   request.documentCount = request.documentIds.length;
-  request.documentStatus = "Documents received";
-  request.notification = "Loan documents uploaded and ready for credit operations review.";
+  request.documentStatus = documentAnalysisSummary.status === "ready_for_credit_review"
+    ? "Analyzed - ready for credit review"
+    : "Analyzed - needs document review";
+  request.documentAnalysisSummary = documentAnalysisSummary;
+  request.remainingRequiredDocuments = documentAnalysisSummary.remainingRequiredDocuments;
+  request.notification = documentAnalysisSummary.summary;
 
   db.auditLogs.unshift({
     auditId: id("AUD"),
     timestamp: now,
-    actor: "Customer Document Upload",
+    actor: "DocumentIntelligenceAgent",
     actorUserId: body.userId || null,
-    transcript: `${savedDocuments.length} document(s) uploaded for ${request.requestId}`,
+    transcript: `${savedDocuments.length} document(s) uploaded and analyzed for ${request.requestId}`,
     mode: "system",
-    language: body.language || "en",
+    language,
     customerId: request.customerId,
     payrollId: null,
-    intent: "document_upload",
-    confidence: 100,
+    intent: "document_intelligence",
+    confidence: documentAnalysisSummary.averageConfidence || 100,
     riskLevel: request.riskLevel || "Medium",
-    suggestedAction: "Documents linked to loan application",
+    suggestedAction: documentAnalysisSummary.summary,
     requestType: request.type,
     recommendation: request.decisionRecommendation,
     decisionLabel: request.decisionLabel,
-    decisionExplanation: request.decisionExplanation,
-    requiredDocuments: request.requiredDocuments || [],
+    decisionExplanation: documentAnalysisSummary.summary,
+    requiredDocuments: request.remainingRequiredDocuments || request.requiredDocuments || [],
+    agentReports: [
+      agentReport(
+        "DocumentIntelligenceAgent",
+        "Analyzes uploaded loan documents and extracts review signals",
+        documentAnalysisSummary.status === "ready_for_credit_review" ? "complete" : "warning",
+        documentAnalysisSummary.status,
+        documentAnalysisSummary.averageConfidence || 70,
+        documentAnalysisSummary.summary,
+        savedDocuments.map((document) => `${document.documentId}:${document.intelligence?.documentType || "unknown"}`)
+      )
+    ],
     sources: [],
-    engine: "document-workflow",
-    model: "nexus-document-v1",
+    engine: "document-intelligence",
+    model: "nexus-document-intelligence-v1",
     status: "complete"
   });
   const automation = await triggerN8nWorkflow(
@@ -2183,7 +2340,8 @@ async function uploadServiceRequestDocuments(req, res) {
       decision: {
         recommendation: request.decisionRecommendation,
         decision_label: request.decisionLabel,
-        document_status: request.documentStatus
+        document_status: request.documentStatus,
+        document_analysis: documentAnalysisSummary
       }
     })
   );

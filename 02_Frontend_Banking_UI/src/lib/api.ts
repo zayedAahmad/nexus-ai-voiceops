@@ -195,6 +195,30 @@ export interface ServiceRequest {
   decisionRecommendation?: string;
   riskLevel?: string;
   analysisConfidence?: number;
+  remainingRequiredDocuments?: string[];
+  documentAnalysisSummary?: {
+    agentId?: string;
+    status?: string;
+    analyzedCount?: number;
+    averageConfidence?: number;
+    detectedTypes?: string[];
+    remainingRequiredDocuments?: string[];
+    flags?: string[];
+    summary?: string;
+  };
+}
+
+export interface DocumentIntelligence {
+  agentId?: string;
+  status?: string;
+  documentType?: string;
+  documentTypeLabel?: string;
+  confidence?: number;
+  extractedFields?: Record<string, string | number>;
+  signals?: string[];
+  flags?: string[];
+  recommendation?: string;
+  summary?: string;
 }
 
 export interface DocumentUpload {
@@ -207,6 +231,7 @@ export interface DocumentUpload {
   size: number;
   uploadedAt: string;
   uploadedByName?: string;
+  intelligence?: DocumentIntelligence;
 }
 
 export interface Ticket {
@@ -804,22 +829,70 @@ export const api = {
       () => {
         const state = readDemoState();
         const requestItem = (state.serviceRequests || []).find((item) => item.requestId === input.requestId);
-        const documents = input.files.map((file) => ({
-          documentId: `DOC-DEMO-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(16).slice(2, 6).toUpperCase()}`,
-          requestId: input.requestId,
-          customerId: input.customerId || requestItem?.customerId || "10452",
-          originalName: file.name,
-          storedName: file.name,
-          mimeType: file.type,
-          size: file.data.length,
-          uploadedAt: new Date().toISOString(),
-          uploadedByName: input.userName,
-        }));
+        const lang = input.language === "ar" ? "ar" : "en";
+        const inferType = (name: string) => {
+          const text = name.toLowerCase();
+          if (text.includes("salary") || text.includes("payslip") || text.includes("راتب")) return "salary_certificate";
+          if (text.includes("statement") || text.includes("bank") || text.includes("كشف") || text.includes("حساب")) return "bank_statement";
+          if (text.includes("id") || text.includes("identity") || text.includes("passport") || text.includes("هوية")) return "identity_document";
+          return "supporting_document";
+        };
+        const documents = input.files.map((file) => {
+          const documentType = inferType(file.name);
+          const documentTypeLabel =
+            documentType === "salary_certificate"
+              ? lang === "ar" ? "شهادة راتب" : "Salary certificate"
+              : documentType === "bank_statement"
+                ? lang === "ar" ? "كشف حساب" : "Bank statement"
+                : documentType === "identity_document"
+                  ? lang === "ar" ? "وثيقة هوية" : "Identity document"
+                  : lang === "ar" ? "مستند داعم" : "Supporting document";
+          const confidence = documentType === "supporting_document" ? 64 : 90;
+          return {
+            documentId: `DOC-DEMO-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(16).slice(2, 6).toUpperCase()}`,
+            requestId: input.requestId,
+            customerId: input.customerId || requestItem?.customerId || "10452",
+            originalName: file.name,
+            storedName: file.name,
+            mimeType: file.type,
+            size: file.data.length,
+            uploadedAt: new Date().toISOString(),
+            uploadedByName: input.userName,
+            intelligence: {
+              agentId: "DocumentIntelligenceAgent",
+              status: documentType === "supporting_document" ? "needs_review" : "analyzed",
+              documentType,
+              documentTypeLabel,
+              confidence,
+              extractedFields: {
+                documentName: file.name,
+                detectedType: documentTypeLabel,
+                fileSizeKb: Math.round(file.data.length / 1024),
+              },
+              signals: [`${documentType}_detected`, "demo_metadata_analysis", "linked_to_loan_request"],
+              flags: documentType === "supporting_document" ? [lang === "ar" ? "نوع المستند يحتاج مراجعة موظف" : "Document type needs officer review"] : [],
+              recommendation: documentType === "supporting_document" ? "manual_document_review" : "accepted_for_credit_review",
+              summary: lang === "ar"
+                ? `تم تحليل المستند كـ ${documentTypeLabel} وربطه بطلب القرض.`
+                : `Document analyzed as ${documentTypeLabel} and linked to the loan request.`,
+            },
+          };
+        });
         state.documentUploads = [...documents, ...(state.documentUploads || [])];
         if (requestItem) {
           requestItem.documentIds = [...(requestItem.documentIds || []), ...documents.map((doc) => doc.documentId)];
           requestItem.documentCount = requestItem.documentIds.length;
-          requestItem.documentStatus = "Received";
+          requestItem.documentStatus = "Analyzed - ready for credit review";
+          requestItem.documentAnalysisSummary = {
+            agentId: "DocumentIntelligenceAgent",
+            status: "ready_for_credit_review",
+            analyzedCount: documents.length,
+            averageConfidence: Math.round(documents.reduce((sum, doc) => sum + (doc.intelligence?.confidence || 0), 0) / documents.length),
+            detectedTypes: documents.map((doc) => doc.intelligence?.documentType || "unknown"),
+            remainingRequiredDocuments: [],
+            flags: documents.flatMap((doc) => doc.intelligence?.flags || []),
+            summary: lang === "ar" ? "تم تحليل المستندات وربطها بطلب القرض." : "Documents analyzed and linked to the loan request.",
+          };
         }
         writeDemoState(state);
         return { request: requestItem || (readDemoState().serviceRequests?.[0] as ServiceRequest), documents };

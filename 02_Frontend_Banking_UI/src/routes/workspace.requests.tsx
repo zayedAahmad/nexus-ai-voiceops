@@ -358,6 +358,31 @@ function RequestDetail({
             {t("documents")} · {docs.length}
           </h3>
         </div>
+        {request.documentAnalysisSummary ? (
+          <div className="mb-3 rounded-2xl border border-accent/25 bg-accent/10 p-4">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <BadgeCheck className="h-4 w-4 text-accent" />
+                <span className="text-xs font-semibold text-foreground">DocumentIntelligenceAgent</span>
+              </div>
+              <span className="rounded-full border border-accent/30 px-2.5 py-1 text-[10px] text-accent">
+                {request.documentAnalysisSummary.averageConfidence || 0}%
+              </span>
+            </div>
+            <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+              {request.documentAnalysisSummary.summary}
+            </p>
+            {request.remainingRequiredDocuments?.length ? (
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {request.remainingRequiredDocuments.map((item) => (
+                  <span key={item} className="rounded-full border border-warning/30 bg-warning/10 px-2 py-1 text-[10px] text-warning">
+                    {item}
+                  </span>
+                ))}
+              </div>
+            ) : null}
+          </div>
+        ) : null}
         {docs.length === 0 ? (
           <div className="rounded-xl border border-dashed border-border/60 p-4 text-center text-xs text-muted-foreground">
             {lang === "ar" ? "لا توجد مستندات مرفقة" : "No documents attached"}
@@ -365,7 +390,7 @@ function RequestDetail({
         ) : (
           <ul className="grid gap-3 sm:grid-cols-2">
             {docs.map((d) => (
-              <DocCard key={d.documentId} doc={d} />
+              <DocCard key={d.documentId} doc={d} lang={lang} />
             ))}
           </ul>
         )}
@@ -422,13 +447,15 @@ function Meta({ label, value }: { label: string; value: string }) {
   );
 }
 
-function DocCard({ doc }: { doc: DocumentUpload }) {
+function DocCard({ doc, lang }: { doc: DocumentUpload; lang: "en" | "ar" }) {
   const isImg = doc.mimeType.startsWith("image/");
   const isPdf = doc.mimeType === "application/pdf";
   const [open, setOpen] = useState(false);
   const [imageFailed, setImageFailed] = useState(false);
   const viewUrl = api.documentViewUrl(doc.documentId);
   const downloadUrl = api.documentDownloadUrl(doc.documentId);
+  const analysis = doc.intelligence;
+  const fields = Object.entries(analysis?.extractedFields || {}).slice(0, 4);
   return (
     <li className="overflow-hidden rounded-2xl border border-border bg-card/40">
       <div className="grid h-32 place-items-center bg-background/50">
@@ -457,6 +484,40 @@ function DocCard({ doc }: { doc: DocumentUpload }) {
         <div className="mt-0.5 text-[10px] text-muted-foreground">
           {(doc.size / 1024).toFixed(0)} KB · {doc.mimeType.split("/")[1]}
         </div>
+        {analysis ? (
+          <div className="mt-3 rounded-xl border border-accent/20 bg-accent/10 p-3">
+            <div className="flex items-center justify-between gap-2">
+              <span className="truncate text-[11px] font-semibold text-foreground">
+                {analysis.documentTypeLabel || analysis.documentType || "Analyzed document"}
+              </span>
+              <span className="shrink-0 rounded-full border border-accent/30 px-2 py-0.5 text-[10px] text-accent">
+                {analysis.confidence || 0}%
+              </span>
+            </div>
+            <p className="mt-1 text-[10px] leading-relaxed text-muted-foreground">
+              {analysis.summary || (lang === "ar" ? "تم تحليل المستند وربطه بالطلب." : "Document analyzed and linked to request.")}
+            </p>
+            {fields.length ? (
+              <div className="mt-2 grid gap-1">
+                {fields.map(([key, value]) => (
+                  <div key={key} className="flex justify-between gap-2 text-[10px]">
+                    <span className="text-muted-foreground">{key}</span>
+                    <span className="truncate text-foreground" title={String(value)}>{String(value)}</span>
+                  </div>
+                ))}
+              </div>
+            ) : null}
+            {analysis.flags?.length ? (
+              <div className="mt-2 flex flex-wrap gap-1">
+                {analysis.flags.map((flag) => (
+                  <span key={flag} className="rounded-full border border-warning/30 bg-warning/10 px-2 py-0.5 text-[10px] text-warning">
+                    {flag}
+                  </span>
+                ))}
+              </div>
+            ) : null}
+          </div>
+        ) : null}
         <div className="mt-2 flex gap-2">
           <button
             onClick={() => {

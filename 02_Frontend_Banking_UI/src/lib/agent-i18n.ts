@@ -13,6 +13,7 @@ const agentNames: Record<string, string> = {
   OptimizerAgent: "وكيل تحسين القرار",
   PayrollOpsAgent: "وكيل عمليات الرواتب",
   AccountDataAgent: "وكيل بيانات الحساب",
+  DocumentIntelligenceAgent: "وكيل تحليل المستندات",
   BankingAgent: "الوكيل البنكي",
 };
 
@@ -27,6 +28,7 @@ const agentRoles: Record<string, string> = {
   OptimizerAgent: "يحل التناقضات ويوحّد القرار النهائي مع إشارات المخاطر",
   PayrollOpsAgent: "يعالج حالات الرواتب والاستثناءات التشغيلية",
   AccountDataAgent: "يقرأ بيانات الحساب والرصيد",
+  DocumentIntelligenceAgent: "يحلل مستندات العميل ويستخرج مؤشرات المراجعة",
 };
 
 const signalLabels: Record<string, string> = {
@@ -57,6 +59,10 @@ const signalLabels: Record<string, string> = {
   account_attention: "الحساب يحتاج متابعة",
   account_missing: "الحساب غير موجود",
   missing_loan_record: "ملف القرض غير موجود",
+  ready_for_credit_review: "جاهز لمراجعة الائتمان",
+  needs_document_review: "يحتاج مراجعة مستندات",
+  analyzed: "تم تحليل المستند",
+  manual_document_review: "مراجعة مستندات يدوية",
 };
 
 const intentLabels: Record<string, string> = {
@@ -70,6 +76,7 @@ const intentLabels: Record<string, string> = {
   cliq_transfer_assist: "مساعدة تحويل كليك",
   account_opening: "فتح حساب",
   service_request: "طلب خدمة",
+  document_intelligence: "تحليل المستندات",
   general_banking_assistance: "مساعدة بنكية عامة",
 };
 
