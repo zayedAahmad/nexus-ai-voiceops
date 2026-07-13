@@ -7,7 +7,7 @@ const LOCAL_BACKEND =
     ? "http://localhost:4173"
     : "";
 const BASE = (import.meta.env.VITE_API_BASE_URL || LOCAL_BACKEND).replace(/\/$/, "");
-const API_TIMEOUT_MS = Number(import.meta.env.VITE_API_TIMEOUT_MS || 5000);
+const API_TIMEOUT_MS = Number(import.meta.env.VITE_API_TIMEOUT_MS || 20000);
 
 function url(path: string) {
   return `${BASE}${path}`;

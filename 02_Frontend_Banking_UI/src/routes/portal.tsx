@@ -98,6 +98,8 @@ function PortalBody({ state }: { state: Awaited<ReturnType<typeof api.state>> })
   const [note, setNote] = useState("");
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
   const [confirm, setConfirm] = useState<string | null>(null);
+  const [requestError, setRequestError] = useState<string | null>(null);
+  const [documentStatus, setDocumentStatus] = useState<string | null>(null);
   const [expandedRequestId, setExpandedRequestId] = useState<string | null>(null);
   const customer = useMemo(
     () => (state.customers || []).find((c) => c.customerId === session?.customerId),
@@ -156,18 +158,33 @@ function PortalBody({ state }: { state: Awaited<ReturnType<typeof api.state>> })
     mutationFn: api.createServiceRequest,
     onSuccess: async (data) => {
       const created = data.request;
+      setRequestError(null);
+      setDocumentStatus(null);
       // Upload attached documents (if request type supports it — server allows loan_application)
       const loanLikeRequest = String(created.type || "").toLowerCase().includes("loan");
+      if (pendingFiles.length && !loanLikeRequest) {
+        setRequestError(lang === "ar" ? "تحليل المستندات مفعّل فقط لطلبات القروض في هذا الديمو." : "Document analysis is enabled only for loan requests in this demo.");
+      }
       if (pendingFiles.length && loanLikeRequest) {
+        try {
+        const validationError = validateUploadFiles(pendingFiles, lang);
+        if (validationError) {
+          setRequestError(validationError);
+          setPendingFiles([]);
+          setNote("");
+          setConfirm(created.requestId);
+          qc.invalidateQueries({ queryKey: ["state"] });
+          return;
+        }
+        setDocumentStatus(lang === "ar" ? "جاري رفع وتحليل المستندات..." : "Uploading and analyzing documents...");
         const files = await Promise.all(
           pendingFiles.map(async (f) => ({
             name: f.name,
-            type: f.type,
+            type: f.type || mimeFromName(f.name),
             data: await fileToDataUrl(f),
           })),
         );
-        try {
-          await api.uploadDocuments({
+          const uploaded = await api.uploadDocuments({
             requestId: created.requestId,
             customerId: created.customerId,
             userId: session?.userId,
@@ -175,7 +192,14 @@ function PortalBody({ state }: { state: Awaited<ReturnType<typeof api.state>> })
             language: lang,
             files,
           });
-        } catch {
+          setDocumentStatus(
+            lang === "ar"
+              ? `تم رفع وتحليل ${uploaded.documents.length} مستند/مستندات. تظهر النتيجة عند الموظف.`
+              : `${uploaded.documents.length} document(s) uploaded and analyzed. The result is visible to the employee.`,
+          );
+        } catch (error) {
+          setDocumentStatus(null);
+          setRequestError(error instanceof Error ? error.message : String(error));
           /* surfaced silently — the request itself was submitted */
         }
       }
@@ -190,6 +214,8 @@ function PortalBody({ state }: { state: Awaited<ReturnType<typeof api.state>> })
     if (!transcript.trim() || !session) return;
     setReply(null);
     setConfirm(null);
+    setRequestError(null);
+    setDocumentStatus(null);
     analyze.mutate({
       transcript,
       mode: "customer",
@@ -352,6 +378,16 @@ function PortalBody({ state }: { state: Awaited<ReturnType<typeof api.state>> })
                   <Send className="h-4 w-4" />
                   {createRequest.isPending ? t("submitting") : t("submit")}
                 </button>
+                {documentStatus ? (
+                  <div className="mt-3 rounded-lg border border-accent/40 bg-accent/10 p-3 text-xs text-accent">
+                    {documentStatus}
+                  </div>
+                ) : null}
+                {(requestError || createRequest.isError) ? (
+                  <div className="mt-3 rounded-lg border border-destructive/40 bg-destructive/10 p-3 text-xs text-destructive">
+                    {requestError || (createRequest.error as Error).message}
+                  </div>
+                ) : null}
                 {confirm ? (
                   <div className="mt-3 rounded-lg border border-success/40 bg-success/10 p-3 text-xs text-success">
                     {t("requestSent")} · #{confirm}
@@ -647,6 +683,32 @@ function formatRequestDate(value: string | undefined, lang: "en" | "ar") {
   }).format(date);
 }
 
+function mimeFromName(name: string) {
+  const ext = name.toLowerCase().split(".").pop();
+  if (ext === "pdf") return "application/pdf";
+  if (ext === "png") return "image/png";
+  if (ext === "jpg" || ext === "jpeg") return "image/jpeg";
+  if (ext === "webp") return "image/webp";
+  return "";
+}
+
+function isAllowedUpload(file: File) {
+  const mime = file.type || mimeFromName(file.name);
+  return ["application/pdf", "image/png", "image/jpeg", "image/webp"].includes(mime);
+}
+
+function validateUploadFiles(files: File[], lang: "en" | "ar") {
+  const tooLarge = files.find((file) => file.size > 4 * 1024 * 1024);
+  if (tooLarge) {
+    return lang === "ar" ? `الملف ${tooLarge.name} أكبر من 4MB.` : `${tooLarge.name} is larger than 4MB.`;
+  }
+  const invalid = files.find((file) => !isAllowedUpload(file));
+  if (invalid) {
+    return lang === "ar" ? `نوع الملف ${invalid.name} غير مدعوم. ارفع PDF أو صورة.` : `${invalid.name} is not supported. Upload PDF or image files.`;
+  }
+  return "";
+}
+
 function FileDrop({
   files,
   setFiles,
@@ -666,7 +728,9 @@ function FileDrop({
           accept="application/pdf,image/png,image/jpeg,image/webp"
           className="hidden"
           onChange={(e) => {
-            const list = Array.from(e.target.files || []);
+            const list = Array.from(e.target.files || []).filter(
+              (file) => isAllowedUpload(file) && file.size <= 4 * 1024 * 1024,
+            );
             setFiles([...files, ...list].slice(0, 5));
           }}
         />

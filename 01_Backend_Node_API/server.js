@@ -411,8 +411,20 @@ function extensionForMime(mimeType) {
   return map[mimeType] || "";
 }
 
+function mimeForFileName(name = "") {
+  const ext = path.extname(String(name).toLowerCase());
+  const map = {
+    ".pdf": "application/pdf",
+    ".png": "image/png",
+    ".jpg": "image/jpeg",
+    ".jpeg": "image/jpeg",
+    ".webp": "image/webp"
+  };
+  return map[ext] || "";
+}
+
 function parseUploadedFile(file) {
-  const mimeType = String(file.type || "").toLowerCase();
+  const mimeType = String(file.type || mimeForFileName(file.name) || "").toLowerCase();
   const allowed = ["application/pdf", "image/png", "image/jpeg", "image/jpg", "image/webp"];
   if (!allowed.includes(mimeType)) {
     throw new Error("Only PDF and image documents are allowed.");
