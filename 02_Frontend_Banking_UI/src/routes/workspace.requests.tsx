@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Check,
@@ -13,6 +13,9 @@ import {
   Filter,
   User2,
   Search,
+  ChevronLeft,
+  ChevronRight,
+  PanelRightOpen,
 } from "lucide-react";
 import {
   api,
@@ -47,6 +50,7 @@ function Body({ state }: { state: Awaited<ReturnType<typeof api.state>> }) {
   const qc = useQueryClient();
   const requests = state.serviceRequests || [];
   const docs = state.documentUploads || [];
+  const detailRef = useRef<HTMLDivElement | null>(null);
   const [filter, setFilter] = useState<Filter>("all");
   const [search, setSearch] = useState("");
   const filtered = useMemo(() => {
@@ -76,18 +80,38 @@ function Body({ state }: { state: Awaited<ReturnType<typeof api.state>> }) {
     filtered[0]?.requestId || requests[0]?.requestId || null,
   );
   const [note, setNote] = useState("");
+  const selectedIndex = useMemo(
+    () => filtered.findIndex((request) => request.requestId === selectedId),
+    [filtered, selectedId],
+  );
+
+  const selectRequest = (requestId: string, scrollToDetail = false) => {
+    setSelectedId(requestId);
+    if (scrollToDetail) {
+      window.setTimeout(() => {
+        detailRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 0);
+    }
+  };
+
+  const moveSelection = (direction: -1 | 1) => {
+    if (!filtered.length) return;
+    const current = selectedIndex >= 0 ? selectedIndex : 0;
+    const nextIndex = Math.min(Math.max(current + direction, 0), filtered.length - 1);
+    selectRequest(filtered[nextIndex].requestId, true);
+  };
 
   useEffect(() => {
     if (!requests.length) {
       setSelectedId(null);
       return;
     }
-    if (filter === "all" && !search.trim() && requests[0]?.requestId && requests[0].requestId !== selectedId) {
-      setSelectedId(requests[0].requestId);
+    if (!filtered.length) {
+      setSelectedId(null);
       return;
     }
-    if (!selectedId || !requests.some((request) => request.requestId === selectedId)) {
-      setSelectedId(filtered[0]?.requestId || requests[0]?.requestId || null);
+    if (!selectedId || !filtered.some((request) => request.requestId === selectedId)) {
+      setSelectedId(filtered[0].requestId);
     }
   }, [filter, filtered, requests, search, selectedId]);
 
@@ -161,13 +185,43 @@ function Body({ state }: { state: Awaited<ReturnType<typeof api.state>> }) {
             </div>
           </div>
 
+          <div className="mt-3 flex items-center justify-between gap-2 rounded-2xl border border-border/60 bg-background/35 p-2">
+            <span className="min-w-0 truncate text-[11px] text-muted-foreground">
+              {filtered.length && selectedIndex >= 0
+                ? `${lang === "ar" ? "\u0627\u0644\u0637\u0644\u0628" : "Request"} ${selectedIndex + 1} ${lang === "ar" ? "\u0645\u0646" : "of"} ${filtered.length}`
+                : lang === "ar"
+                  ? "\u0627\u062e\u062a\u0631 \u0637\u0644\u0628\u0627 \u0645\u0646 \u0627\u0644\u0642\u0627\u0626\u0645\u0629"
+                  : "Select a request"}
+            </span>
+            <div className="flex shrink-0 items-center gap-1">
+              <button
+                type="button"
+                onClick={() => moveSelection(-1)}
+                disabled={selectedIndex <= 0}
+                className="grid h-8 w-8 place-items-center rounded-full border border-border text-muted-foreground transition hover:border-accent/50 hover:text-foreground disabled:opacity-35"
+                title={lang === "ar" ? "\u0627\u0644\u0633\u0627\u0628\u0642" : "Previous"}
+              >
+                <ChevronLeft className="h-3.5 w-3.5 rtl:rotate-180" />
+              </button>
+              <button
+                type="button"
+                onClick={() => moveSelection(1)}
+                disabled={selectedIndex < 0 || selectedIndex >= filtered.length - 1}
+                className="grid h-8 w-8 place-items-center rounded-full border border-border text-muted-foreground transition hover:border-accent/50 hover:text-foreground disabled:opacity-35"
+                title={lang === "ar" ? "\u0627\u0644\u062a\u0627\u0644\u064a" : "Next"}
+              >
+                <ChevronRight className="h-3.5 w-3.5 rtl:rotate-180" />
+              </button>
+            </div>
+          </div>
+
           <ul className="mt-3 max-h-[68vh] space-y-1 overflow-y-auto pr-1">
             {filtered.map((r) => {
               const active = r.requestId === selectedId;
               return (
                 <li key={r.requestId}>
                   <button
-                    onClick={() => setSelectedId(r.requestId)}
+                    onClick={() => selectRequest(r.requestId, true)}
                     className={`group w-full rounded-2xl border p-3 text-start transition ${
                       active
                         ? "border-accent/40 bg-accent/10 nexus-glow"
@@ -186,6 +240,10 @@ function Body({ state }: { state: Awaited<ReturnType<typeof api.state>> }) {
                       <span className="truncate">{intentLabel(r.type, lang)}</span>
                       {r.riskLevel ? <RiskBadge level={r.riskLevel} lang={lang} /> : null}
                     </div>
+                    <div className="mt-2 inline-flex items-center gap-1 text-[10px] font-medium text-accent opacity-80 transition group-hover:opacity-100">
+                      <PanelRightOpen className="h-3 w-3" />
+                      {lang === "ar" ? "\u0639\u0631\u0636 \u0627\u0644\u062a\u0641\u0627\u0635\u064a\u0644" : "Open details"}
+                    </div>
                   </button>
                 </li>
               );
@@ -199,33 +257,62 @@ function Body({ state }: { state: Awaited<ReturnType<typeof api.state>> }) {
           </ul>
         </aside>
 
-        <section className="min-w-0">
+        <section ref={detailRef} className="min-w-0 scroll-mt-6">
           {selected ? (
-            <RequestDetail
-              request={selected}
-              audit={selectedAudit}
-              docs={docs.filter((d) => {
-                const ids = Array.isArray(selected.documentIds)
-                  ? selected.documentIds
-                  : String(selected.documentIds || "")
-                      .split(/[,\s]+/)
-                      .filter(Boolean);
-                return ids.includes(d.documentId) || d.requestId === selected.requestId;
-              })}
-              note={note}
-              setNote={setNote}
-              onDecide={(decision) =>
-                decide.mutate({
-                  requestId: selected.requestId,
-                  decision,
-                  note,
-                  approver: session?.name,
-                  actorUserId: session?.userId,
-                  language: lang,
-                })
-              }
-              pending={decide.isPending}
-            />
+            <>
+              <div className="mb-3 flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-border/60 bg-card/35 p-3">
+                <div className="text-xs text-muted-foreground">
+                  {filtered.length && selectedIndex >= 0
+                    ? `${lang === "ar" ? "\u0627\u0644\u0637\u0644\u0628" : "Request"} ${selectedIndex + 1} ${lang === "ar" ? "\u0645\u0646" : "of"} ${filtered.length}`
+                    : selected.requestId}
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => moveSelection(-1)}
+                    disabled={selectedIndex <= 0}
+                    className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1.5 text-xs text-muted-foreground transition hover:border-accent/50 hover:text-foreground disabled:opacity-35"
+                  >
+                    <ChevronLeft className="h-3.5 w-3.5 rtl:rotate-180" />
+                    {lang === "ar" ? "\u0627\u0644\u0633\u0627\u0628\u0642" : "Previous"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => moveSelection(1)}
+                    disabled={selectedIndex < 0 || selectedIndex >= filtered.length - 1}
+                    className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1.5 text-xs text-muted-foreground transition hover:border-accent/50 hover:text-foreground disabled:opacity-35"
+                  >
+                    {lang === "ar" ? "\u0627\u0644\u062a\u0627\u0644\u064a" : "Next"}
+                    <ChevronRight className="h-3.5 w-3.5 rtl:rotate-180" />
+                  </button>
+                </div>
+              </div>
+              <RequestDetail
+                request={selected}
+                audit={selectedAudit}
+                docs={docs.filter((d) => {
+                  const ids = Array.isArray(selected.documentIds)
+                    ? selected.documentIds
+                    : String(selected.documentIds || "")
+                        .split(/[,\s]+/)
+                        .filter(Boolean);
+                  return ids.includes(d.documentId) || d.requestId === selected.requestId;
+                })}
+                note={note}
+                setNote={setNote}
+                onDecide={(decision) =>
+                  decide.mutate({
+                    requestId: selected.requestId,
+                    decision,
+                    note,
+                    approver: session?.name,
+                    actorUserId: session?.userId,
+                    language: lang,
+                  })
+                }
+                pending={decide.isPending}
+              />
+            </>
           ) : (
             <div className="nexus-glass grid min-h-[40vh] place-items-center rounded-3xl p-8 text-sm text-muted-foreground">
               {lang === "ar" ? "اختر طلبًا للمراجعة" : "Select a request to review"}
