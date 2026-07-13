@@ -16,12 +16,23 @@ const PUBLIC_DIR = path.join(__dirname, "public");
 const PORT = Number(process.env.PORT || 4173);
 const FRONTEND_DEV_PORT = Number(process.env.FRONTEND_DEV_PORT || 8080);
 const FRONTEND_DEV_URL = (process.env.FRONTEND_DEV_URL || `http://127.0.0.1:${FRONTEND_DEV_PORT}`).replace(/\/$/, "");
+const IS_PRODUCTION = process.env.NODE_ENV === "production" || process.env.RENDER === "true";
 const FRONTEND_DIR_CANDIDATES = [
   path.join(__dirname, "..", "nexus-ai-voiceops-frontend"),
   path.join(__dirname, "..", "02_Frontend_Banking_UI")
 ];
 const FRONTEND_DIR = FRONTEND_DIR_CANDIDATES.find((dir) => existsSync(path.join(dir, "package.json")));
-const USE_FRONTEND_PROXY = process.env.NEXUS_SINGLE_URL !== "false" && Boolean(FRONTEND_DIR);
+const FRONTEND_STATIC_DIR_CANDIDATES = [
+  FRONTEND_DIR ? path.join(FRONTEND_DIR, ".output", "public") : null,
+  FRONTEND_DIR ? path.join(FRONTEND_DIR, "dist") : null,
+  PUBLIC_DIR
+].filter(Boolean);
+const STATIC_DIR = FRONTEND_STATIC_DIR_CANDIDATES.find((dir) => existsSync(path.join(dir, "index.html"))) || PUBLIC_DIR;
+const USE_FRONTEND_PROXY =
+  !IS_PRODUCTION &&
+  process.env.NEXUS_FRONTEND_DEV_PROXY !== "false" &&
+  process.env.NEXUS_SINGLE_URL !== "false" &&
+  Boolean(FRONTEND_DIR);
 const MODEL = process.env.OPENAI_MODEL || "gpt-5.5";
 const TRANSCRIBE_MODEL = process.env.OPENAI_TRANSCRIBE_MODEL || "gpt-4o-mini-transcribe";
 const NEXUS_SYSTEM_DIRECTIVE_VERSION = "nexus-banking-architect-v1";
@@ -2563,11 +2574,27 @@ async function proxyFrontend(req, res) {
   }
 }
 
+function isPathInside(parent, child) {
+  const relative = path.relative(parent, child);
+  return Boolean(relative) && !relative.startsWith("..") && !path.isAbsolute(relative);
+}
+
+function staticCacheControl(filePath, urlPath) {
+  if (path.basename(filePath) === "index.html" || urlPath === "/" || !path.extname(filePath)) {
+    return "no-cache";
+  }
+  if (/\/(assets|_build)\//.test(urlPath.replace(/\\/g, "/")) || /\.[a-f0-9]{8,}\./i.test(path.basename(filePath))) {
+    return "public, max-age=31536000, immutable";
+  }
+  return "public, max-age=3600";
+}
+
 async function serveStatic(req, res) {
   const urlPath = decodeURIComponent(new URL(req.url, `http://${req.headers.host}`).pathname);
   const safePath = urlPath === "/" ? "/index.html" : urlPath;
-  const filePath = path.normalize(path.join(PUBLIC_DIR, safePath));
-  if (!filePath.startsWith(PUBLIC_DIR)) {
+  const staticDir = STATIC_DIR;
+  const filePath = path.normalize(path.join(staticDir, safePath));
+  if (!isPathInside(staticDir, filePath) && filePath !== path.join(staticDir, "index.html")) {
     res.writeHead(403);
     res.end("Forbidden");
     return;
@@ -2576,12 +2603,28 @@ async function serveStatic(req, res) {
     const file = await readFile(filePath);
     res.writeHead(200, {
       "content-type": mimeTypes[path.extname(filePath)] || "application/octet-stream",
-      "cache-control": "no-store",
+      "cache-control": staticCacheControl(filePath, urlPath),
       ...corsHeaders()
     });
     res.end(file);
   } catch {
-    res.writeHead(404, { "content-type": "text/plain; charset=utf-8", ...corsHeaders() });
+    const acceptsHtml = String(req.headers.accept || "").includes("text/html");
+    if (acceptsHtml && path.extname(filePath) === "") {
+      try {
+        const fallback = path.join(staticDir, "index.html");
+        const file = await readFile(fallback);
+        res.writeHead(200, {
+          "content-type": "text/html; charset=utf-8",
+          "cache-control": "no-cache",
+          ...corsHeaders()
+        });
+        res.end(file);
+        return;
+      } catch {
+        // Fall through to a plain 404 if no production frontend exists.
+      }
+    }
+    res.writeHead(404, { "content-type": "text/plain; charset=utf-8", "cache-control": "no-store", ...corsHeaders() });
     res.end("Not found");
   }
 }

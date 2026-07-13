@@ -6,7 +6,7 @@
   "scripts": {
     "install:backend": "npm install --prefix 01_Backend_Node_API",
     "install:frontend": "npm install --include=dev --prefix 02_Frontend_Banking_UI",
-    "build": "npm run install:backend && npm run install:frontend",
+    "build": "npm run install:backend && npm run install:frontend && npm --prefix 02_Frontend_Banking_UI run build",
     "start": "npm --prefix 01_Backend_Node_API start",
     "dev": "npm start"
   },
