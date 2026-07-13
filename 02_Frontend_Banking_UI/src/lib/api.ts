@@ -486,6 +486,33 @@ function readDemoState(): AppState {
   };
 }
 
+function readStoredDemoState(): Partial<AppState> {
+  if (typeof window === "undefined") return {};
+  return safeJsonParse<Partial<AppState>>(localStorage.getItem(DEMO_STORAGE_KEY), {});
+}
+
+function mergeById<T>(serverItems: T[] = [], localItems: T[] = [], key: keyof T) {
+  const valueFor = (item: T) => String((item as Record<string, unknown>)[String(key)] || "");
+  const seen = new Set(serverItems.map(valueFor));
+  const localOnly = localItems.filter((item) => {
+    const id = valueFor(item);
+    return id.includes("DEMO") && !seen.has(id);
+  });
+  return [...localOnly, ...serverItems];
+}
+
+function mergeStoredDemoState(server: AppState): AppState {
+  const local = readStoredDemoState();
+  if (!Object.keys(local).length) return server;
+  return {
+    ...server,
+    serviceRequests: mergeById(server.serviceRequests || [], local.serviceRequests || [], "requestId"),
+    documentUploads: mergeById(server.documentUploads || [], local.documentUploads || [], "documentId"),
+    auditLogs: mergeById(server.auditLogs || [], local.auditLogs || [], "auditId"),
+    n8nWorkflowRuns: mergeById(server.n8nWorkflowRuns || [], local.n8nWorkflowRuns || [], "runId"),
+  };
+}
+
 function writeDemoState(state: AppState) {
   if (typeof window !== "undefined") {
     localStorage.setItem(DEMO_STORAGE_KEY, JSON.stringify(state));
@@ -689,7 +716,7 @@ function normalizeAnalyzeResponse(
 
 export const api = {
   state: () => withDemoFallback(
-    () => request<AppState>("/api/state"),
+    async () => mergeStoredDemoState(await request<AppState>("/api/state")),
     () => readDemoState(),
   ),
 

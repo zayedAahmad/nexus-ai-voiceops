@@ -10,6 +10,8 @@ export function BackendGate({ children }: { children: (state: NonNullable<Awaite
     queryKey: ["state"],
     queryFn: api.state,
     retry: 0,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
     refetchInterval: 8000,
   });
 

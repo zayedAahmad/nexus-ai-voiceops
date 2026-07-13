@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Check,
@@ -76,6 +76,20 @@ function Body({ state }: { state: Awaited<ReturnType<typeof api.state>> }) {
     filtered[0]?.requestId || requests[0]?.requestId || null,
   );
   const [note, setNote] = useState("");
+
+  useEffect(() => {
+    if (!requests.length) {
+      setSelectedId(null);
+      return;
+    }
+    if (filter === "all" && !search.trim() && requests[0]?.requestId && requests[0].requestId !== selectedId) {
+      setSelectedId(requests[0].requestId);
+      return;
+    }
+    if (!selectedId || !requests.some((request) => request.requestId === selectedId)) {
+      setSelectedId(filtered[0]?.requestId || requests[0]?.requestId || null);
+    }
+  }, [filter, filtered, requests, search, selectedId]);
 
   const selected = useMemo(
     () => requests.find((r) => r.requestId === selectedId) || null,
