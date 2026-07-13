@@ -501,15 +501,31 @@ function mergeById<T>(serverItems: T[] = [], localItems: T[] = [], key: keyof T)
   return [...localOnly, ...serverItems];
 }
 
+function sortNewestFirst<T extends { createdAt?: string; timestamp?: string; uploadedAt?: string; requestedAt?: string }>(items: T[] = []) {
+  return [...items].sort((a, b) => {
+    const aTime = Date.parse(a.createdAt || a.timestamp || a.uploadedAt || a.requestedAt || "");
+    const bTime = Date.parse(b.createdAt || b.timestamp || b.uploadedAt || b.requestedAt || "");
+    return (Number.isFinite(bTime) ? bTime : 0) - (Number.isFinite(aTime) ? aTime : 0);
+  });
+}
+
 function mergeStoredDemoState(server: AppState): AppState {
   const local = readStoredDemoState();
-  if (!Object.keys(local).length) return server;
+  if (!Object.keys(local).length) {
+    return {
+      ...server,
+      serviceRequests: sortNewestFirst(server.serviceRequests || []),
+      documentUploads: sortNewestFirst(server.documentUploads || []),
+      auditLogs: sortNewestFirst(server.auditLogs || []),
+      n8nWorkflowRuns: sortNewestFirst(server.n8nWorkflowRuns || []),
+    };
+  }
   return {
     ...server,
-    serviceRequests: mergeById(server.serviceRequests || [], local.serviceRequests || [], "requestId"),
-    documentUploads: mergeById(server.documentUploads || [], local.documentUploads || [], "documentId"),
-    auditLogs: mergeById(server.auditLogs || [], local.auditLogs || [], "auditId"),
-    n8nWorkflowRuns: mergeById(server.n8nWorkflowRuns || [], local.n8nWorkflowRuns || [], "runId"),
+    serviceRequests: sortNewestFirst(mergeById(server.serviceRequests || [], local.serviceRequests || [], "requestId")),
+    documentUploads: sortNewestFirst(mergeById(server.documentUploads || [], local.documentUploads || [], "documentId")),
+    auditLogs: sortNewestFirst(mergeById(server.auditLogs || [], local.auditLogs || [], "auditId")),
+    n8nWorkflowRuns: sortNewestFirst(mergeById(server.n8nWorkflowRuns || [], local.n8nWorkflowRuns || [], "runId")),
   };
 }
 

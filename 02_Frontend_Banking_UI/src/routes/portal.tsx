@@ -37,6 +37,18 @@ export const Route = createFileRoute("/portal")({
   component: PortalPage,
 });
 
+function notifyStateRefresh(requestId?: string) {
+  if (typeof window === "undefined") return;
+  const payload = JSON.stringify({ type: "service_request_submitted", requestId, at: Date.now() });
+  localStorage.setItem("nexus-state-refresh", payload);
+  window.dispatchEvent(new CustomEvent("nexus-state-refresh", { detail: payload }));
+  if ("BroadcastChannel" in window) {
+    const channel = new BroadcastChannel("nexus-state");
+    channel.postMessage(payload);
+    channel.close();
+  }
+}
+
 const demoPrompts: Record<"en" | "ar", string[]> = {
   en: [
     "Why didn't my salary arrive this month?",
@@ -207,6 +219,7 @@ function PortalBody({ state }: { state: Awaited<ReturnType<typeof api.state>> })
       setNote("");
       setConfirm(created.requestId);
       qc.invalidateQueries({ queryKey: ["state"] });
+      notifyStateRefresh(created.requestId);
     },
   });
 

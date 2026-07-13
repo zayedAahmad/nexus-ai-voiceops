@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { useLang } from "@/lib/i18n";
@@ -12,8 +13,28 @@ export function BackendGate({ children }: { children: (state: NonNullable<Awaite
     retry: 0,
     refetchOnMount: "always",
     refetchOnWindowFocus: true,
-    refetchInterval: 8000,
+    refetchInterval: 3000,
   });
+
+  const refetchState = q.refetch;
+
+  useEffect(() => {
+    const refetch = () => refetchState();
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key === "nexus-state-refresh") refetch();
+    };
+    window.addEventListener("focus", refetch);
+    window.addEventListener("nexus-state-refresh", refetch);
+    window.addEventListener("storage", handleStorage);
+    const channel = "BroadcastChannel" in window ? new BroadcastChannel("nexus-state") : null;
+    channel?.addEventListener("message", refetch);
+    return () => {
+      window.removeEventListener("focus", refetch);
+      window.removeEventListener("nexus-state-refresh", refetch);
+      window.removeEventListener("storage", handleStorage);
+      channel?.close();
+    };
+  }, [refetchState]);
 
   if (q.isLoading) {
     return (

@@ -22,17 +22,21 @@ const FRONTEND_DIR_CANDIDATES = [
   path.join(__dirname, "..", "02_Frontend_Banking_UI")
 ];
 const FRONTEND_DIR = FRONTEND_DIR_CANDIDATES.find((dir) => existsSync(path.join(dir, "package.json")));
-const FRONTEND_STATIC_DIR_CANDIDATES = [
+const FRONTEND_BUILD_DIR_CANDIDATES = [
   FRONTEND_DIR ? path.join(FRONTEND_DIR, ".output", "public") : null,
-  FRONTEND_DIR ? path.join(FRONTEND_DIR, "dist") : null,
-  PUBLIC_DIR
+  FRONTEND_DIR ? path.join(FRONTEND_DIR, "dist") : null
 ].filter(Boolean);
-const STATIC_DIR = FRONTEND_STATIC_DIR_CANDIDATES.find((dir) => existsSync(path.join(dir, "index.html"))) || PUBLIC_DIR;
+const FRONTEND_BUILD_DIR = FRONTEND_BUILD_DIR_CANDIDATES.find((dir) => existsSync(path.join(dir, "index.html")));
+const STATIC_DIR = FRONTEND_BUILD_DIR || PUBLIC_DIR;
 const USE_FRONTEND_PROXY =
-  !IS_PRODUCTION &&
+  process.env.NEXUS_FRONTEND_DEV_PROXY === "true" ||
+  (!FRONTEND_BUILD_DIR &&
+    Boolean(FRONTEND_DIR) &&
+    process.env.NEXUS_SINGLE_URL !== "false") ||
+  (!IS_PRODUCTION &&
   process.env.NEXUS_FRONTEND_DEV_PROXY !== "false" &&
   process.env.NEXUS_SINGLE_URL !== "false" &&
-  Boolean(FRONTEND_DIR);
+    Boolean(FRONTEND_DIR));
 const MODEL = process.env.OPENAI_MODEL || "gpt-5.5";
 const TRANSCRIBE_MODEL = process.env.OPENAI_TRANSCRIBE_MODEL || "gpt-4o-mini-transcribe";
 const NEXUS_SYSTEM_DIRECTIVE_VERSION = "nexus-banking-architect-v1";
@@ -2676,6 +2680,8 @@ server.listen(PORT, () => {
   console.log(`Nexus AI VoiceOps running at http://localhost:${PORT}`);
   if (USE_FRONTEND_PROXY) {
     console.log(`Single-link UI enabled. Frontend is proxied from ${FRONTEND_DEV_URL}`);
+  } else {
+    console.log(`Single-link UI enabled. Frontend static dir: ${STATIC_DIR}`);
   }
   console.log(process.env.OPENAI_API_KEY ? `OpenAI model: ${MODEL}` : "OpenAI key not set. Using deterministic sandbox engine.");
 });
