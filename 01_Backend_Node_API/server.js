@@ -924,12 +924,26 @@ function optimizerAgent({ analysis, workerReports, language = "en" }) {
   const ar = language === "ar";
   const optimized = { ...analysis };
   const changes = [];
+  const creditReport = workerReports.find((report) => report.agentId === "CreditRiskAgent");
+  const creditEvidence = Object.fromEntries(
+    (creditReport?.evidence || [])
+      .map((item) => String(item).split("="))
+      .filter((parts) => parts.length >= 2)
+      .map(([key, ...value]) => [key, value.join("=")])
+  );
 
   if (signals.has("reject_recommended") || signals.has("high_debt_burden")) {
     optimized.riskLevel = "High";
     optimized.recommendation = "reject";
     optimized.decisionLabel = ar ? "مرفوض - مخاطر مرتفعة" : "Rejected - high risk";
     changes.push("Aligned final recommendation with the credit rejection signal.");
+    optimized.decisionExplanation = ar
+      ? `تم رفض الطلب لأن إشارات الائتمان تعتبر المخاطر مرتفعة. المبلغ المطلوب${creditEvidence.requestedAmount ? ` (${creditEvidence.requestedAmount})` : ""} لا يتناسب مع الدخل الشهري${creditEvidence.monthlyIncome ? ` (${creditEvidence.monthlyIncome})` : ""} أو يتجاوز حدود القدرة على السداد في سياسة الديمو.`
+      : `The request was rejected because the credit signals indicate high risk. The requested amount${creditEvidence.requestedAmount ? ` (${creditEvidence.requestedAmount})` : ""} is not aligned with the monthly income${creditEvidence.monthlyIncome ? ` (${creditEvidence.monthlyIncome})` : ""} or exceeds the demo affordability policy.`;
+    optimized.customerSafeResponse = ar
+      ? "لا يمكن قبول طلب القرض بهذا المبلغ حالياً لأن المبلغ المطلوب لا يتناسب مع الدخل المتاح وحدود القدرة على السداد. يمكنك تقديم طلب جديد بمبلغ أقل أو مراجعة موظف البنك لمعرفة البدائل المناسبة."
+      : "We cannot approve this loan amount right now because the requested amount is not aligned with the available income and repayment capacity limits. You may submit a lower amount or ask a bank employee about suitable alternatives.";
+    optimized.requiredDocuments = [];
   } else if (signals.has("documents_required")) {
     optimized.riskLevel = optimized.riskLevel === "High" ? "High" : "Medium";
     optimized.recommendation = "request_documents";
